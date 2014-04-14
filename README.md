@@ -1,5 +1,7 @@
 # Linked
 
+[![Build Status](https://secure.travis-ci.org/frankiesardo/linked.png)](http://travis-ci.org/frankiesardo/linked)
+
 A Clojure library designed for efficient map and set implementation that remembers the insertion order of its elements.
 Even after multiple assoc and dissoc.
 
