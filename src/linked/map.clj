@@ -106,7 +106,7 @@
                   this
                   o)))
   (empty [_]
-         (.LinkedMap nil (hash-map)))
+         (LinkedMap. nil (hash-map)))
   (equiv [this o]
          (and (= (.count this) (count o))
               (every? (fn [^MapEntry e]
