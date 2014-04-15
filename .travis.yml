@@ -1,4 +1,5 @@
 language: clojure
 lein: lein2
 script: lein2 test
-notifications: email: false
+notifications: 
+	email: false
