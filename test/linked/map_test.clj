@@ -105,3 +105,12 @@
 (deftest object-features
   (let [m (linked-map 'a 1 :b 2)]
     (is (= "{a 1, :b 2}" (str m)))))
+
+(deftest print-and-read-ordered
+  (let [s (linked-map 1 2, 3 4, 5 6, 1 9, 7 8)]
+    (is (= "#linked/map ([1 9] [3 4] [5 6] [7 8])"
+           (pr-str s)))
+    (let [o (read-string (pr-str s))]
+      (is (= LinkedMap (type o)))
+      (is (= '([1 9] [3 4] [5 6] [7 8])
+             (seq o))))))
