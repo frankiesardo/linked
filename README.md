@@ -4,6 +4,12 @@
 
 Map and Set structures that rememeber the insertion order of its elements, even after multiple assoc and dissoc.
 
+## Download
+
+    leiningen
+
+    [com.github.frankiesardo/linked "0.1.0"]
+
 ## Map
 
     (use 'linked.map)
