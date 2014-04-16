@@ -48,7 +48,7 @@ These data structures wrap a normal `hash-map` but instead of feeding it a norma
 
 This yields the same Big O time and space complexity of a standard `hash-map` but it makes easy to walk throught the structure in sequential or reverse order following the left and right links.
 
-Effective performance is about 2.5x slower than a `hash-map` and about the same as a `sorted-map`.
+Effective performance is about 2.5x slower than a `hash-map`.
 
 ## License
 
