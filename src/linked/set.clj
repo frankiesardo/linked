@@ -1,18 +1,15 @@
 (ns linked.set
   (:use [linked.map :only [linked-map]])
-  (:import (clojure.lang IPersistentSet
-                         IPersistentCollection
-                         IPersistentVector
+  (:import (clojure.lang Counted
                          IFn
                          ILookup
-                         Associative
-                         Counted
+                         IPersistentCollection
+                         IPersistentSet
+                         IPersistentVector
+                         Reversible
                          Seqable
-                         SeqIterator
-                         MapEquivalence
-                         MapEntry)
-           (java.util Set
-                      Map$Entry)
+                         SeqIterator)
+           (java.util Set)
            (java.lang Iterable)))
 
 
@@ -26,6 +23,12 @@
        (.valAt l-map k))
 
   Set
+  (size [_]
+        (.size l-map))
+
+  Iterable
+  (iterator [this]
+            (SeqIterator. (.seq this)))
 
   Counted
 
@@ -35,7 +38,7 @@
   (cons [_ o]
         (LinkedSet. (.cons l-map [o o])))
   (empty [_]
-         (linked-set))
+         (LinkedSet. (linked-map)))
   (equiv [this o]
          (and (= (.count this) (count o))
               (every? (fn [e] (contains? o e))
@@ -43,12 +46,29 @@
 
   Seqable
   (seq [_]
-       (map first (.seq l-map)))
+       (if-let [s (.seq l-map)]
+             (map first s)))
+
+  Reversible
+  (rseq [_]
+        (if-let [s (.rseq l-map)]
+             (map first s)))
 
   IFn
   (invoke [_ k]
           (.valAt l-map k))
-  )
+
+  Object
+  (toString [this]
+    (str "#{" (clojure.string/join " " (map str this)) "}"))
+  (hashCode [this]
+    (reduce + (map hash (.seq this))))
+  (equals [this other]
+    (or (identical? this other)
+        (and (instance? Set other)
+             (let [^Set s other]
+               (and (= (.size this) (.size s))
+                    (every? #(.contains s %) (.seq this))))))))
 
 (defmethod print-method LinkedSet [o ^java.io.Writer w]
   (.write w "#linked/set ")
@@ -59,6 +79,5 @@
 
 (defn linked-set
   ([] empty-linked-set)
-  ([& xs] (into (linked-set) xs)))
-
-
+  ([x] (if (coll? x) (into empty-linked-set x) (linked-set [x])))
+  ([x & more] (apply conj empty-linked-set x more)))
