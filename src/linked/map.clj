@@ -1,20 +1,21 @@
 (ns linked.map
-  (:import (clojure.lang IPersistentMap
-                         IPersistentCollection
-                         IPersistentVector
+  (:import (clojure.lang Associative
+                         Counted
                          IFn
                          ILookup
-                         Associative
-                         Seqable
-                         SeqIterator
+                         IPersistentCollection
+                         IPersistentVector
+                         IPersistentMap
+                         MapEntry
                          MapEquivalence
-                         MapEntry)
+                         Reversible
+                         Seqable
+                         SeqIterator)
            (java.util Map
                       Map$Entry)
            (java.lang Iterable)))
 
 ; TODO
-; Revertible, Indexed, Sorted interfaces
 ; Transient support
 
 (defrecord Node [key value left right])
@@ -118,6 +119,8 @@
          (nil? tail-node) 1
          :else (+ 2 (.size delegate-map))))
 
+  Counted
+
   IPersistentCollection
   (count [this]
          (.size this))
@@ -134,7 +137,7 @@
                   this
                   o)))
   (empty [_]
-         (LinkedMap. nil nil (hash-map)))
+         (linked-map))
   (equiv [this o]
          (and (= (.count this) (count o))
               (every? (fn [^MapEntry e]
@@ -149,7 +152,7 @@
              (list entry)
              (cons entry (lazy-seq (visit-node (:right (delegate-map node-key))))))))
        (cond
-        (nil? head-node) (list)
+        (nil? head-node) nil
         (nil? tail-node) (list (.entryAt this (:key head-node)))
         (empty? delegate-map) (list (.entryAt this (:key head-node)) (.entryAt this (:key tail-node)))
         :else (cons (.entryAt this (:key head-node)) (lazy-seq (visit-node (:right head-node))))))
@@ -193,13 +196,29 @@
             (reduce (fn [acc ^MapEntry e]
                       (let [k (.key e), v (.val e)]
                         (unchecked-add ^Integer acc ^Integer (bit-xor (hash k) (hash v)))))
-                    0 (.seq this))))
+                    0 (.seq this)))
+  Reversible
+  (rseq [this]
+        (defn visit-node [node-key]
+         (let [entry (.entryAt this node-key)]
+           (if (= node-key (:key head-node))
+             (list entry)
+             (cons entry (lazy-seq (visit-node (:left (delegate-map node-key))))))))
+       (cond
+        (nil? head-node) nil
+        (nil? tail-node) (list (.entryAt this (:key head-node)))
+        (empty? delegate-map) (list (.entryAt this (:key tail-node)) (.entryAt this (:key head-node)))
+        :else (cons (.entryAt this (:key tail-node)) (lazy-seq (visit-node (:left tail-node))))))
+  )
 
 (defmethod print-method LinkedMap [o ^java.io.Writer w]
   (.write w "#linked/map ")
   (print-method (seq o) w))
 
+(def ^{:private true,
+       :tag LinkedMap} empty-linked-map (LinkedMap. nil nil (hash-map)))
+
 (defn linked-map
-  ([] (LinkedMap. nil nil (hash-map)))
+  ([] empty-linked-map)
   ([coll] (into (linked-map) coll))
   ([k v & more] (apply assoc (linked-map) k v more)))

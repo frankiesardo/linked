@@ -3,6 +3,26 @@
         [linked.map :only [linked-map]])
   (:import linked.map.LinkedMap))
 
+(deftest implementations
+  (let [basic (linked-map)]
+    (testing "Interfaces marked as implemented"
+      (are [class] (instance? class basic)
+           clojure.lang.IPersistentMap
+           clojure.lang.IPersistentCollection
+           clojure.lang.Counted
+           clojure.lang.Associative
+           java.util.Map))
+    (testing "Behavior smoke testing"
+      (testing "Most operations don't change type"
+        (are [object] (= (class object) (class basic))
+             (conj basic [1 2])
+             (assoc basic 1 2)
+             (into basic {1 2})))
+      (testing "Seq-oriented operations return nil when empty"
+        (are [object] (nil? object)
+             (seq basic)
+             (rseq basic))))))
+
 (deftest equality
   (let [empty-map (linked-map)
         one-item (assoc empty-map 1 2)]
@@ -46,6 +66,12 @@
             ordered (into m kvs)]
         (= (seq kvs) (seq ordered))))))
 
+(deftest reversing
+  (let [source (vec (for [n (range 10)]
+                      [n n]))
+        m (into (sorted-map) source)]
+    (is (= (rseq m) (rseq source)))))
+
 (deftest map-features
   (let [m (linked-map :a 1 :b 2 :c 3)]
     (testing "Keyword lookup"
@@ -75,3 +101,7 @@
            (conj m nil)
            (merge m ())
            (into m ())))))
+
+(deftest object-features
+  (let [m (linked-map 'a 1 :b 2)]
+    (is (= "{a 1, :b 2}" (str m)))))
