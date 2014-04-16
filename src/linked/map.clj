@@ -220,5 +220,5 @@
 
 (defn linked-map
   ([] empty-linked-map)
-  ([coll] (into (linked-map) coll))
-  ([k v & more] (apply assoc (linked-map) k v more)))
+  ([coll] (into empty-linked-map coll))
+  ([k v & more] (apply assoc empty-linked-map k v more)))

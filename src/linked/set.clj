@@ -38,7 +38,7 @@
   (cons [_ o]
         (LinkedSet. (.cons l-map [o o])))
   (empty [_]
-         (LinkedSet. (linked-map)))
+         (linked-set))
   (equiv [this o]
          (and (= (.count this) (count o))
               (every? (fn [e] (contains? o e))
