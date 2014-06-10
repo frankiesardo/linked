@@ -114,3 +114,30 @@
       (is (= LinkedMap (type o)))
       (is (= '([1 9] [3 4] [5 6] [7 8])
              (seq o))))))
+
+(defn- insertion-time [m]
+  (let [start-time (System/currentTimeMillis)
+        result (reduce #(assoc %1 %2 %2) m (range 1000000))
+        end-time (System/currentTimeMillis)]
+    [result (- end-time start-time)]))
+
+(defn- removal-time [m]
+  (let [start-time (System/currentTimeMillis)
+        result (reduce #(dissoc %1 %2) m (range 1000000))
+        end-time (System/currentTimeMillis)]
+    [result (- end-time start-time)]))
+
+#_(deftest performance
+  (testing "Stress test - TODO should be randomized"
+    (let [empty-linked (linked-map)
+          empty-hash (hash-map)
+          [full-linked linked-insertion-time] (insertion-time empty-linked)
+          [full-hash hash-insertion-time] (insertion-time empty-hash)]
+      (println "Linked insertion time" linked-insertion-time)
+      (println "Hash insertion time" hash-insertion-time)
+      (is (< linked-insertion-time (* 2 hash-insertion-time)))
+      (let [[_ linked-removal-time] (removal-time full-linked)
+            [_ hash-removal-time] (removal-time full-hash)]
+        (println "Linked removal time" linked-removal-time)
+        (println "Hash removal time" hash-removal-time)
+        (is (< linked-removal-time (* 2 hash-removal-time)))))))

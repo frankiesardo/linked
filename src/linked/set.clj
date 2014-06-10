@@ -72,7 +72,9 @@
 
 (defmethod print-method LinkedSet [o ^java.io.Writer w]
   (.write w "#linked/set ")
-  (print-method (seq o) w))
+  (if-let [s (seq o)]
+    (print-method (seq o) w)
+    (print-method (list) w)))
 
 (def ^{:private true,
        :tag LinkedSet} empty-linked-set (LinkedSet. (linked-map)))

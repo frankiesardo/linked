@@ -20,6 +20,9 @@
 
 (defrecord Node [key value left right])
 
+(defn- insert [{:keys [head-node tail-node delegate-map]} k v]
+)
+
 (deftype LinkedMap [head-node tail-node delegate-map]
   IPersistentMap
   (assoc [this k v]
@@ -213,7 +216,9 @@
 
 (defmethod print-method LinkedMap [o ^java.io.Writer w]
   (.write w "#linked/map ")
-  (print-method (seq o) w))
+  (if-let [s (seq o)]
+    (print-method (seq o) w)
+    (print-method (list) w)))
 
 (def ^{:private true,
        :tag LinkedMap} empty-linked-map (LinkedMap. nil nil (hash-map)))
