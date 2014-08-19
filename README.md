@@ -8,7 +8,7 @@ Map and Set structures that rememeber the insertion order of its elements, even 
 
     leiningen
 
-    [com.github.frankiesardo/linked "0.1.0"]
+    [linked "0.1.1"]
 
 ## Map
 

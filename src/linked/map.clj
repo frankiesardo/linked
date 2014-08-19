@@ -20,9 +20,6 @@
 
 (defrecord Node [key value left right])
 
-(defn- insert [{:keys [head-node tail-node delegate-map]} k v]
-)
-
 (deftype LinkedMap [head-node tail-node delegate-map]
   IPersistentMap
   (assoc [this k v]
