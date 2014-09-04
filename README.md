@@ -6,9 +6,7 @@ Map and Set structures that rememeber the insertion order of its elements, even 
 
 ## Download
 
-    leiningen
-
-    [linked "0.1.1"]
+[![Clojars Project](http://clojars.org/linked/latest-version.svg)](http://clojars.org/linked)
 
 ## Map
 
