@@ -1,6 +1,7 @@
 (ns linked.set
   (:use [linked.map :only [linked-map]])
   (:import (clojure.lang Counted
+                         IObj
                          IFn
                          ILookup
                          IPersistentCollection
@@ -13,18 +14,18 @@
            (java.lang Iterable)))
 
 
-(deftype LinkedSet [l-map]
+(deftype LinkedSet [linked-map]
   IPersistentSet
   (disjoin [_ k]
-           (LinkedSet. (.without l-map k)))
+           (LinkedSet. (.without linked-map k)))
   (contains [_ k]
-            (.containsKey l-map k))
+            (.containsKey linked-map k))
   (get [_ k]
-       (.valAt l-map k))
+       (.valAt linked-map k))
 
   Set
   (size [_]
-        (.size l-map))
+        (.size linked-map))
 
   Iterable
   (iterator [this]
@@ -34,9 +35,9 @@
 
   IPersistentCollection
   (count [_]
-         (.count l-map))
+         (.count linked-map))
   (cons [_ o]
-        (LinkedSet. (.cons l-map [o o])))
+        (LinkedSet. (.cons linked-map [o o])))
   (empty [_]
          (linked-set))
   (equiv [this o]
@@ -46,17 +47,23 @@
 
   Seqable
   (seq [_]
-       (if-let [s (.seq l-map)]
+       (if-let [s (.seq linked-map)]
              (map first s)))
 
   Reversible
   (rseq [_]
-        (if-let [s (.rseq l-map)]
+        (if-let [s (.rseq linked-map)]
              (map first s)))
 
   IFn
   (invoke [_ k]
-          (.valAt l-map k))
+          (.valAt linked-map k))
+
+  IObj
+  (meta [this]
+    (.meta ^IObj linked-map))
+  (withMeta [this m]
+    (LinkedSet. (.withMeta ^IObj linked-map m)))
 
   Object
   (toString [this]

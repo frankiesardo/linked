@@ -100,7 +100,9 @@
       (are [x] (= m x)
            (conj m nil)
            (merge m ())
-           (into m ())))))
+           (into m ())))
+    (testing "meta support"
+      (is (= {'a 'b} (meta (with-meta m {'a 'b})))))))
 
 (deftest object-features
   (let [m (linked-map 'a 1 :b 2)]

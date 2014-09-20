@@ -71,7 +71,9 @@
     (testing "Falsy lookup support"
       (is (= false (#{false 1} false))))
     (testing "Ordered disj"
-      (is (= #{:a 1 2 3} (disj s :b :c))))))
+      (is (= #{:a 1 2 3} (disj s :b :c))))
+    (testing "meta support"
+      (is (= {'a 'b} (meta (with-meta s {'a 'b})))))))
 
 (deftest object-features
   (let [s (linked-set 'a 1 :b 2)]
@@ -85,4 +87,3 @@
       (is (= LinkedSet (type o)))
       (is (= '(1 2 9 8 7 5)
              (seq o))))))
-

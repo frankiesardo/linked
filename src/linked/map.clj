@@ -1,6 +1,7 @@
 (ns linked.map
   (:import (clojure.lang Associative
                          Counted
+                         IObj
                          IFn
                          ILookup
                          IPersistentCollection
@@ -108,12 +109,17 @@
       (:key tail-node) (:value tail-node)
       (let [v (.valAt delegate-map k not-found)]
         (if (= v not-found) not-found (:value v)))))
-
   IFn
   (invoke [this k]
     (.valAt this k))
   (invoke [this k not-found]
     (.valAt this k not-found))
+
+  IObj
+  (meta [this]
+    (.meta ^IObj delegate-map))
+  (withMeta [this m]
+    (LinkedMap. head-node tail-node (.withMeta ^IObj delegate-map m)))
 
   Object
   (toString [this]
