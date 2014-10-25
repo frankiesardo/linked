@@ -1,8 +1,13 @@
 (ns linked.map-test
-  (:use clojure.test
-        [linked.map :only [linked-map]])
-  (:import linked.map.LinkedMap))
+  (:require [linked.map :refer [linked-map]]
+            #+clj [clojure.test :refer :all]
+            #+cljs [cemerick.cljs.test]
+            #+cljs [cljs.reader :refer [read-string *tag-table*]])
+  #+cljs (:require-macros
+          [cemerick.cljs.test :refer
+           [deftest is are testing run-tests]]))
 
+#+clj
 (deftest implementations
   (let [basic (linked-map)]
     (testing "Interfaces marked as implemented"
@@ -40,13 +45,13 @@
         (is (= other-way unsorted))))
     (testing "Hash code sanity"
       (is (integer? (hash one-item)))
-      (is (= #{one-item} (into #{} [one-item {1 2}]))))))
+      (is (= (hash {1 2}) (hash one-item))))))
 
 (deftest ordering
   (let [values [[:first 10]
                 [:second 20]
                 [:third 30]]
-        m (linked-map values)]
+        m (into (linked-map) values)]
     (testing "Seq behaves like on a seq of vectors"
       (is (= (seq values) (seq m))))
     (testing "New values get added at the end"
@@ -110,36 +115,9 @@
 
 (deftest print-and-read-ordered
   (let [s (linked-map 1 2, 3 4, 5 6, 1 9, 7 8)]
-    (is (= "#linked/map ([1 9] [3 4] [5 6] [7 8])"
+    (is (= "#linked/map {1 9, 3 4, 5 6, 7 8}"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
-      (is (= LinkedMap (type o)))
+      #+clj (is (= linked.map.LinkedMap (type o)))
       (is (= '([1 9] [3 4] [5 6] [7 8])
              (seq o))))))
-
-(defn- insertion-time [m]
-  (let [start-time (System/currentTimeMillis)
-        result (reduce #(assoc %1 %2 %2) m (range 1000000))
-        end-time (System/currentTimeMillis)]
-    [result (- end-time start-time)]))
-
-(defn- removal-time [m]
-  (let [start-time (System/currentTimeMillis)
-        result (reduce #(dissoc %1 %2) m (range 1000000))
-        end-time (System/currentTimeMillis)]
-    [result (- end-time start-time)]))
-
-#_(deftest performance
-  (testing "Stress test - TODO should be randomized"
-    (let [empty-linked (linked-map)
-          empty-hash (hash-map)
-          [full-linked linked-insertion-time] (insertion-time empty-linked)
-          [full-hash hash-insertion-time] (insertion-time empty-hash)]
-      (println "Linked insertion time" linked-insertion-time)
-      (println "Hash insertion time" hash-insertion-time)
-      (is (< linked-insertion-time (* 2 hash-insertion-time)))
-      (let [[_ linked-removal-time] (removal-time full-linked)
-            [_ hash-removal-time] (removal-time full-hash)]
-        (println "Linked removal time" linked-removal-time)
-        (println "Hash removal time" hash-removal-time)
-        (is (< linked-removal-time (* 2 hash-removal-time)))))))
