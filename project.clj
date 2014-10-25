@@ -1,4 +1,4 @@
-(defproject linked "0.1.3"
+(defproject frankiesardo/linked "1.0.0"
   :description "Efficient ordered map and set"
   :url "http://github.com/frankiesardo/linked"
   :license {:name "Eclipse Public License"
