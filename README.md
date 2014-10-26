@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/frankiesardo/linked.png)](http://travis-ci.org/frankiesardo/linked)
 
-Map and Set structures that rememeber the insertion order of its elements, even after multiple assoc and dissoc.
+Map and Set structures that rememeber the insertion order of its elements, even after multiple assoc and dissoc. For Clojure and ClojureScript.
 
 ## Download
 
