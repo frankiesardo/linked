@@ -115,7 +115,7 @@
     (condp = k
       (:key head-node) (:value head-node)
       (:key tail-node) (:value tail-node)
-      (let [v (find delegate-map k not-found)]
+      (let [v (get delegate-map k not-found)]
         (if (= v not-found) not-found (:value v)))))
   IFn
   (invoke [this k]
@@ -366,10 +366,10 @@
                         (lazy-seq (visit-node (:right (delegate-map node-key))))))))]
       (cond
        (nil? head-node) nil
-       (nil? tail-node) (list (find this (:key head-node)))
-       (empty? delegate-map) (list (find this (:key head-node))
-                                   (find this (:key tail-node)))
-       :else (cons (find this (:key head-node))
+       (nil? tail-node) (list (find this head-key))
+       (empty? delegate-map) (list (find this head-key)
+                                   (find this tail-key))
+       :else (cons (find this head-key)
                    (lazy-seq (visit-node (:right head-node))))))))
 
 (defn- rseq* [^LinkedMap this]

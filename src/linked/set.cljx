@@ -45,8 +45,10 @@
   IPersistentCollection
   (count [_]
     (count linked-map))
-  (cons [_ o]
-    (LinkedSet. (cons linked-map [o nil])))
+  (cons [this o]
+    (if (contains? linked-map o)
+      this
+      (LinkedSet. (assoc linked-map o nil))))
   (empty [_]
     (linked-set))
   (equiv [this o]
