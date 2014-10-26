@@ -26,15 +26,15 @@
 (deftype LinkedSet [linked-map]
   IPersistentSet
   (disjoin [_ k]
-    (LinkedSet. (.without linked-map k)))
+    (LinkedSet. (dissoc linked-map k)))
   (contains [_ k]
-    (.containsKey linked-map k))
-  (get [_ k]
-    (when (.containsKey linked-map k) k))
+    (contains? linked-map k))
+  (get [this k]
+    (when (.contains this k) k))
 
   Set
-  (size [_]
-    (.size linked-map))
+  (size [this]
+    (.count this))
 
   Iterable
   (iterator [this]
@@ -44,9 +44,9 @@
 
   IPersistentCollection
   (count [_]
-    (.count linked-map))
+    (count linked-map))
   (cons [_ o]
-    (LinkedSet. (.cons linked-map [o nil])))
+    (LinkedSet. (cons linked-map [o nil])))
   (empty [_]
     (linked-set))
   (equiv [this o]
@@ -56,11 +56,11 @@
 
   Seqable
   (seq [_]
-    (when-let [s (.seq linked-map)] (map key s)))
+    (when-let [s (seq linked-map)] (map key s)))
 
   Reversible
   (rseq [_]
-    (when-let [s (.rseq linked-map)] (map key s)))
+    (when-let [s (rseq linked-map)] (map key s)))
 
   IFn
   (invoke [this k]

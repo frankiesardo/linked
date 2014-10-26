@@ -11,6 +11,7 @@
                         [com.cemerick/clojurescript.test "0.3.1"]]
               :aliases {"cleantest" ["do" "clean," "cljx" "once," "test,"
                                      "cljsbuild" "test"]
+                        "cleancheck" ["do" "clean," "cljx" "once," "check"]
                         "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}}}
 
   :cljx {:builds [{:source-paths ["src"]
