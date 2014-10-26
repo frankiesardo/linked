@@ -1,4 +1,4 @@
-(defproject frankiesardo/linked "1.0.0"
+(defproject frankiesardo/linked "1.0.4"
   :description "Efficient ordered map and set"
   :url "http://github.com/frankiesardo/linked"
   :license {:name "Eclipse Public License"
@@ -11,8 +11,10 @@
                         [com.cemerick/clojurescript.test "0.3.1"]]
               :aliases {"cleantest" ["do" "clean," "cljx" "once," "test,"
                                      "cljsbuild" "test"]
-                        "cleancheck" ["do" "clean," "cljx" "once," "check"]
-                        "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}}}
+                        "cleancheck" ["do" "clean," "cljx" "once," "check"]}}}
+
+  :auto-clean false
+  :jar-exclusions [#"\.cljx"]
 
   :cljx {:builds [{:source-paths ["src"]
                    :output-path "target/classes"

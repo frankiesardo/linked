@@ -6,23 +6,23 @@ Map and Set structures that rememeber the insertion order of its elements, even 
 
 ## Download
 
-[![Clojars Project](http://clojars.org/linked/latest-version.svg)](http://clojars.org/linked)
+[![Clojars Project](http://clojars.org/frankiesardo/linked/latest-version.svg)](http://clojars.org/frankiesardo/linked)
 
 ## Map
 
     (use 'linked.map)
 
     (linked-map :b 2 :a 1 :d 4)
-    => #linked/map ([:b 2] [:a 1] [:d 4])
+    => #linked/map {:b 2, :a 1, :d 4}
 
     (assoc (ordered-map :b 2 :a 1 :d 4) :c 3)
-    => #linked/map ([:b 2] [:a 1] [:d 4] [:c 3])
+    => #linked/map {:b 2, :a 1, :d 4, :c 3}
 
     (into (linked-map) [[:c 3] [:a 1] [:d 4]])
-    => #linked/map ([:c 3] [:a 1] [:d 4])
+    => #linked/map {:c 3, :a 1, :d 4}
 
     (dissoc (linked-map :c 3 :a 1 :d 4) :a)
-    => #linked/map ([:c 3] [:d 4])
+    => #linked/map {:c 3, :d 4}
 
 ## Set
 
