@@ -1,8 +1,13 @@
 (ns linked.set-test
-  (:use clojure.test
-        [linked.set :only [linked-set]])
-  (:import (linked.set LinkedSet)))
+  (:require [linked.set :refer [linked-set]]
+            #+clj [clojure.test :refer :all]
+            #+cljs [cemerick.cljs.test]
+            #+cljs [cljs.reader :refer [read-string]])
+  #+cljs (:require-macros
+          [cemerick.cljs.test :refer
+           [deftest is are testing run-tests]]))
 
+#+clj
 (deftest implementations
   (let [s (linked-set)]
     (testing "Interfaces marked as implemented"
@@ -84,6 +89,6 @@
     (is (= "#linked/set (1 2 9 8 7 5)"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
-      (is (= LinkedSet (type o)))
+      #+clj (is (= linked.set.LinkedSet (type o)))
       (is (= '(1 2 9 8 7 5)
              (seq o))))))

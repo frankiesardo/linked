@@ -79,7 +79,7 @@
               this
               o)))
   (empty [_]
-    empty-linked-map)
+    (with-meta empty-linked-map (meta delegate-map)))
   (equiv [this o]
     (and (= (.count this) (count o))
          (every? (fn [^MapEntry e]
@@ -310,10 +310,10 @@
                                 (assoc-in [right-key :left] left-key))]
        (LinkedMap. head-node tail-node new-delegate-map)))))
 
-(defn- dissoc-head-node [{head-right :right :as head-node}
-                         {tail-key :key :as tail-node} delegate-map]
+(defn- dissoc-head-node
+  [{head-right :right :as head-node} {tail-key :key :as tail-node} delegate-map]
   (if-not head-right
-    empty-linked-map
+    (with-meta empty-linked-map (meta delegate-map))
 
     (if (= head-right tail-key)
       (let [new-head (assoc tail-node :left nil :right nil)]
@@ -361,12 +361,15 @@
               (let [entry (find this node-key)]
                 (if (= node-key (:key tail-node))
                   (list entry)
-                  (cons entry (lazy-seq (visit-node (:right (delegate-map node-key))))))))]
+                  (cons entry
+                        (lazy-seq (visit-node (:right (delegate-map node-key))))))))]
       (cond
        (nil? head-node) nil
        (nil? tail-node) (list (find this (:key head-node)))
-       (empty? delegate-map) (list (find this (:key head-node)) (find this (:key tail-node)))
-       :else (cons (find this (:key head-node)) (lazy-seq (visit-node (:right head-node))))))))
+       (empty? delegate-map) (list (find this (:key head-node))
+                                   (find this (:key tail-node)))
+       :else (cons (find this (:key head-node))
+                   (lazy-seq (visit-node (:right head-node))))))))
 
 (defn- rseq* [this]
   (let [{head-key :key :as head-node} (.-head-node this)
@@ -376,12 +379,16 @@
               (let [entry (find this node-key)]
                 (if (= node-key (:key head-node))
                   (list entry)
-                  (cons entry (lazy-seq (visit-node (:left (delegate-map node-key))))))))]
+                  (cons entry
+                        (lazy-seq (visit-node (:left (delegate-map node-key))))))))]
       (cond
        (nil? head-node) nil
        (nil? tail-node) (list (find this (:key head-node)))
-       (empty? delegate-map) (list (find this (:key tail-node)) (find this (:key head-node)))
-       :else (cons (find this (:key tail-node)) (lazy-seq (visit-node (:left tail-node))))))))
+       (empty? delegate-map) (list
+                              (find this (:key tail-node))
+                              (find this (:key head-node)))
+       :else (cons (find this (:key tail-node))
+                   (lazy-seq (visit-node (:left tail-node))))))))
 
 (def ^{:private true :tag LinkedMap} empty-linked-map
   (LinkedMap. nil nil (hash-map)))

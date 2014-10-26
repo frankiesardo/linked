@@ -2,7 +2,7 @@
   (:require [linked.map :refer [linked-map]]
             #+clj [clojure.test :refer :all]
             #+cljs [cemerick.cljs.test]
-            #+cljs [cljs.reader :refer [read-string *tag-table*]])
+            #+cljs [cljs.reader :refer [read-string]])
   #+cljs (:require-macros
           [cemerick.cljs.test :refer
            [deftest is are testing run-tests]]))
