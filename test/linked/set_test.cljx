@@ -82,11 +82,11 @@
 
 (deftest object-features
   (let [s (linked-set 'a 1 :b 2)]
-    (is (= "#{a 1 :b 2}" (str s)))))
+    (is (= "[a 1 :b 2]" (str s)))))
 
 (deftest print-and-read-ordered
   (let [s (linked-set 1 2 9 8 7 5)]
-    (is (= "#linked/set (1 2 9 8 7 5)"
+    (is (= "#linked/set [1 2 9 8 7 5]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
       #+clj (is (= linked.set.LinkedSet (type o)))

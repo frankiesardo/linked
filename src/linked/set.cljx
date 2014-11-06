@@ -76,7 +76,7 @@
 
   Object
   (toString [this]
-    (str "#{" (string/join " " (map str this)) "}"))
+    (str "[" (string/join " " (map str this)) "]"))
   (hashCode [this]
     (reduce + (map hash (.seq this))))
   (equals [this other]
@@ -89,14 +89,14 @@
 #+clj
 (defmethod print-method LinkedSet [o ^java.io.Writer w]
   (.write w "#linked/set ")
-  (print-method (seq o) w))
+  (print-method (into [] (seq o)) w))
 
 
 #+cljs
 (deftype LinkedSet [linked-map]
   Object
   (toString [this]
-    (str "#{" (string/join " " (map str this)) "}"))
+    (str "[" (string/join " " (map str this)) "]"))
   (equiv [this other]
     (-equiv this other))
 
@@ -160,7 +160,7 @@
 
   IPrintWithWriter
   (-pr-writer [coll writer opts]
-    (-write writer (str "#linked/set " (if-let [s (seq coll)] s '())))))
+    (-write writer (str "#linked/set " (into [] (seq coll))))))
 
 #+cljs (reader/register-tag-parser! "linked/set" linked-set)
 
