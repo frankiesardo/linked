@@ -115,7 +115,7 @@
 
 (deftest print-and-read-ordered
   (let [s (linked-map 1 2, 3 4, 5 6, 1 9, 7 8)]
-    (is (= "#linked/map {1 9, 3 4, 5 6, 7 8}"
+    (is (= "#linked/map [[1 9] [3 4] [5 6] [7 8]]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
       #+clj (is (= linked.map.LinkedMap (type o)))

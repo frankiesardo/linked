@@ -142,7 +142,7 @@
 #+clj
 (defmethod print-method LinkedMap [o ^java.io.Writer w]
   (.write w "#linked/map ")
-  (.write w (str o)))
+  (.write w (pr-str (into [] o))))
 
 #+cljs
 (deftype LinkedMap [head-node tail-node delegate-map]
@@ -239,7 +239,7 @@
   ;; IEditableCollection
 
   IPrintWithWriter
-  (-pr-writer [coll writer opts] (-write writer (str "#linked/map " coll))))
+  (-pr-writer [coll writer opts] (-write writer (str "#linked/map " (into [] coll)))))
 
 #+cljs (reader/register-tag-parser! "linked/map" linked-map)
 

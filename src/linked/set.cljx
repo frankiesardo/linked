@@ -89,7 +89,7 @@
 #+clj
 (defmethod print-method LinkedSet [o ^java.io.Writer w]
   (.write w "#linked/set ")
-  (print-method (into [] (seq o)) w))
+  (print-method (into [] o) w))
 
 
 #+cljs
@@ -160,7 +160,7 @@
 
   IPrintWithWriter
   (-pr-writer [coll writer opts]
-    (-write writer (str "#linked/set " (into [] (seq coll))))))
+    (-write writer (str "#linked/set " (into [] coll)))))
 
 #+cljs (reader/register-tag-parser! "linked/set" linked-set)
 
