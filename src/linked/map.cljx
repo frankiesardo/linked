@@ -27,7 +27,7 @@
   ([k v & more] (apply assoc empty-linked-map k v more)))
 
 
-(defrecord Node [key value left right])
+(defrecord Node [value left right])
 
 (declare assoc*)
 (declare dissoc*)
@@ -35,7 +35,7 @@
 (declare rseq*)
 
 #+clj
-(deftype LinkedMap [head-node tail-node delegate-map]
+(deftype LinkedMap [head delegate-map]
   IPersistentMap
   (assoc [this k v]
     (assoc* this k v))
@@ -54,12 +54,9 @@
   (containsValue [this v]
     (boolean (seq (filter #(= % v) (.values this)))))
   (values [this]
-    (map (comp val val) (.seq this)))
+    (map val (.seq this)))
   (size [_]
-    (cond
-     (nil? head-node) 0
-     (nil? tail-node) 1
-     :else (+ 2 (count delegate-map))))
+    (count delegate-map))
 
   Counted
 
@@ -82,8 +79,8 @@
     (with-meta empty-linked-map (meta delegate-map)))
   (equiv [this o]
     (and (= (.count this) (count o))
-         (every? (fn [^MapEntry e]
-                   (= (.val e) (get o (.key e))))
+         (every? (fn [[k v]]
+                   (= v (get o k)))
                  (.seq this))))
 
   Seqable
@@ -100,10 +97,7 @@
 
   Associative
   (containsKey [_ k]
-    (condp = k
-      (:key head-node) true
-      (:key tail-node) true
-      (contains? delegate-map k)))
+    (contains? delegate-map k))
   (entryAt [this k]
     (when (.containsKey this k)
       (MapEntry. k (.valAt this k))))
@@ -112,11 +106,10 @@
   (valAt [this k]
     (.valAt this k nil))
   (valAt [_ k not-found]
-    (condp = k
-      (:key head-node) (:value head-node)
-      (:key tail-node) (:value tail-node)
-      (let [v (get delegate-map k not-found)]
-        (if (= v not-found) not-found (:value v)))))
+    (if-let [entry (find delegate-map k)]
+      (-> entry val :value)
+      not-found))
+
   IFn
   (invoke [this k]
     (.valAt this k))
@@ -127,7 +120,7 @@
   (meta [this]
     (.meta ^IObj delegate-map))
   (withMeta [this m]
-    (LinkedMap. head-node tail-node (.withMeta ^IObj delegate-map m)))
+    (LinkedMap. head (.withMeta ^IObj delegate-map m)))
 
   ;; IEditableCollection
 
@@ -145,7 +138,7 @@
   (.write w (pr-str (into [] o))))
 
 #+cljs
-(deftype LinkedMap [head-node tail-node delegate-map]
+(deftype LinkedMap [head delegate-map]
   Object
   (toString [coll]
     (str "{" (string/join ", " (for [[k v] coll] (str k " " v))) "}"))
@@ -154,11 +147,11 @@
 
   ICloneable
   (-clone [_]
-    (LinkedMap. head-node tail-node delegate-map))
+    (LinkedMap. head delegate-map))
 
   IWithMeta
   (-with-meta [coll meta]
-    (LinkedMap. head-node tail-node (with-meta delegate-map meta)))
+    (LinkedMap. head (with-meta delegate-map meta)))
 
   IMeta
   (-meta [coll] (meta delegate-map))
@@ -195,31 +188,23 @@
 
   ICounted
   (-count [coll]
-    (cond
-     (nil? head-node) 0
-     (nil? tail-node) 1
-     :else (+ 2 (count delegate-map))))
+    (count delegate-map))
 
   ILookup
   (-lookup [coll k]
     (-lookup coll k nil))
 
   (-lookup [coll k not-found]
-    (condp = k
-      (:key head-node) (:value head-node)
-      (:key tail-node) (:value tail-node)
-      (let [v (-lookup delegate-map k not-found)]
-        (if (= v not-found) not-found (:value v)))))
+    (if-let [entry (find delegate-map k)]
+      (-> entry val :value)
+      not-found))
 
   IAssociative
   (-assoc [coll k v]
     (assoc* coll k v))
 
   (-contains-key? [coll k]
-    (condp = k
-      (:key head-node) true
-      (:key tail-node) true
-      (-contains-key? delegate-map k)))
+    (contains? delegate-map k))
 
   IMap
   (-dissoc [coll k]
@@ -246,150 +231,61 @@
 ;;;; assoc and dissoc impl
 
 (defn- assoc* [^LinkedMap this k v]
-  (let [{head-key :key head-value :value :as head-node } (.-head-node this)
-        {tail-key :key tail-value :value :as tail-node } (.-tail-node this)
+  (let [head (.-head this)
         delegate-map (.-delegate-map this)]
-    (cond
-     (nil? head-node)
-     (let [new-head (Node. k v nil nil)]
-       (LinkedMap. new-head nil delegate-map))
-
-     (= k head-key)
-     (if (= v head-value)
-       this
-       (let [new-head (assoc head-node :value v)]
-         (LinkedMap. new-head tail-node delegate-map)))
-
-     (nil? tail-node)
-     (let [new-head (assoc head-node :left k :right k)
-           new-tail (Node. k v head-key head-key)]
-       (LinkedMap. new-head new-tail delegate-map))
-
-     (= k tail-key)
-     (if (= v tail-value)
-       this
-       (let [new-tail (assoc tail-node :value v)]
-         (LinkedMap. head-node new-tail delegate-map)))
-
-     (contains? delegate-map k)
-     (if (= v (:value (delegate-map k)))
-       this
-       (let [new-delegate-map (assoc-in delegate-map [k :value] v)]
-         (LinkedMap. head-node tail-node new-delegate-map)))
-
-     :else
-     (let [new-tail (Node. k v tail-key head-key)
-           new-head (assoc head-node :left k)
-           old-tail (assoc tail-node :right k)
-           new-delegate-map (assoc delegate-map tail-key old-tail)]
-       (LinkedMap. new-head new-tail new-delegate-map)))))
-
-(defn- dissoc-in-delegate-map
-  [^LinkedMap this [k {left-key :left right-key :right}]]
-  (let [{head-key :key :as head-node} (.-head-node this)
-        {tail-key :key :as tail-node} (.-tail-node this)
-        delegate-map (dissoc (.-delegate-map this) k)]
-    (cond
-     (empty? delegate-map)
-     (let [new-head (assoc head-node :right tail-key)
-           new-tail (assoc tail-node :left head-key)]
-       (LinkedMap. new-head new-tail delegate-map))
-
-     (= left-key head-key)
-     (let [new-head (assoc head-node :right right-key)
-           new-delegate-map (assoc-in delegate-map [right-key :left] head-key)]
-       (LinkedMap. new-head tail-node new-delegate-map))
-
-     (= right-key tail-key)
-     (let [new-tail (assoc tail-node :left left-key)
-           new-delegate-map (assoc-in delegate-map [left-key :right] tail-key)]
-       (LinkedMap. head-node new-tail new-delegate-map))
-
-     :else
-     (let [new-delegate-map (-> delegate-map
-                                (assoc-in [left-key :right] right-key)
-                                (assoc-in [right-key :left] left-key))]
-       (LinkedMap. head-node tail-node new-delegate-map)))))
-
-(defn- dissoc-head-node
-  [{head-right :right :as head-node} {tail-key :key :as tail-node} delegate-map]
-  (if-not head-right
-    (with-meta empty-linked-map (meta delegate-map))
-
-    (if (= head-right tail-key)
-      (let [new-head (assoc tail-node :left nil :right nil)]
-        (LinkedMap. new-head nil delegate-map))
-
-      (let [new-head (assoc (delegate-map head-right) :left tail-key)
-            new-delegate-map (dissoc delegate-map head-right)]
-        (LinkedMap. new-head tail-node new-delegate-map)))))
-
-(defn- dissoc-tail-node [{head-key :key :as head-node}
-                         {tail-left :left :as tail-node} delegate-map]
-  (if (= tail-left head-key)
-    (let [new-head (assoc head-node :left nil :right nil)]
-      (LinkedMap. new-head nil delegate-map))
-
-    (let [new-tail (assoc (delegate-map tail-left) :right head-key)
-          new-delegate-map (dissoc delegate-map tail-left)]
-      (LinkedMap. head-node new-tail new-delegate-map))))
-
-(defn- dissoc-at-boundaries [^LinkedMap this k]
-  (let [{head-key :key :as head-node} (.-head-node this)
-        {tail-key :key :as tail-node} (.-tail-node this)
-        delegate-map (.-delegate-map this)]
-    (cond
-     (and head-node (= k head-key))
-     (dissoc-head-node head-node tail-node delegate-map)
-
-     (and tail-node (= k tail-key))
-     (dissoc-tail-node head-node tail-node delegate-map)
-
-     :else this)))
+    (if-let [entry (find delegate-map k)]
+      (LinkedMap. head (assoc-in delegate-map [k :value] v))
+      (if (empty? delegate-map)
+        (LinkedMap. k (assoc delegate-map k (Node. v k k)))
+        (let [tail (get-in delegate-map [head :left])]
+          (LinkedMap. head (-> delegate-map
+                               (assoc k (Node. v tail head))
+                               (assoc-in [head :left] k)
+                               (assoc-in [tail :right] k))))))))
 
 (defn- dissoc* [^LinkedMap this k]
-  (if-let [old-entry (find (.-delegate-map this) k)]
-    (dissoc-in-delegate-map this old-entry)
-    (dissoc-at-boundaries this k)))
+  (let [head (.-head this)
+        delegate-map (.-delegate-map this)]
+    (if-let [entry (find delegate-map k)]
+      (if (= 1 (count delegate-map))
+        (empty this)
+        (let [rk (-> entry val :right)
+              lk (-> entry val :left)
+              head (if (= k head) rk head)]
+          (LinkedMap. head (-> delegate-map
+                               (dissoc k)
+                               (assoc-in [rk :left] lk)
+                               (assoc-in [lk :right] rk)))))
+      this)))
+
 
 ;;;; seq and rseq impl
 
+(defn- map-entry [k v]
+  #+clj  (MapEntry. k v)
+  #+cljs (vector k v))
+
+(defn- visit-node [delegate-map current last direction]
+  (let [[k node] (find delegate-map current)
+        entry (map-entry k (:value node))
+        next (direction node)]
+    (if (= current last)
+      (list entry)
+      (cons entry (lazy-seq (visit-node delegate-map next last direction))))))
+
 (defn- seq* [^LinkedMap this]
-  (let [{head-key :key :as head-node} (.-head-node this)
-        {tail-key :key :as tail-node} (.-tail-node this)
-        delegate-map (.-delegate-map this)]
-    (letfn [(visit-node [node-key]
-              (let [entry (find this node-key)]
-                (if (= node-key (:key tail-node))
-                  (list entry)
-                  (cons entry
-                        (lazy-seq (visit-node (:right (delegate-map node-key))))))))]
-      (cond
-       (nil? head-node) nil
-       (nil? tail-node) (list (find this head-key))
-       (empty? delegate-map) (list (find this head-key)
-                                   (find this tail-key))
-       :else (cons (find this head-key)
-                   (lazy-seq (visit-node (:right head-node))))))))
+  (let [delegate-map (.-delegate-map this)
+        head (.-head this)
+        tail (get-in delegate-map [head :left])]
+    (when (seq delegate-map)
+      (visit-node delegate-map head tail :right))))
 
 (defn- rseq* [^LinkedMap this]
-  (let [{head-key :key :as head-node} (.-head-node this)
-        {tail-key :key :as tail-node} (.-tail-node this)
-        delegate-map (.-delegate-map this)]
-    (letfn [(visit-node [node-key]
-              (let [entry (find this node-key)]
-                (if (= node-key (:key head-node))
-                  (list entry)
-                  (cons entry
-                        (lazy-seq (visit-node (:left (delegate-map node-key))))))))]
-      (cond
-       (nil? head-node) nil
-       (nil? tail-node) (list (find this (:key head-node)))
-       (empty? delegate-map) (list
-                              (find this (:key tail-node))
-                              (find this (:key head-node)))
-       :else (cons (find this (:key tail-node))
-                   (lazy-seq (visit-node (:left tail-node))))))))
+  (let [delegate-map (.-delegate-map this)
+        head (.-head this)
+        tail (get-in delegate-map [head :left])]
+    (when (seq delegate-map)
+      (visit-node delegate-map tail head :left))))
 
 (def ^{:private true :tag LinkedMap} empty-linked-map
-  (LinkedMap. nil nil (hash-map)))
+  (LinkedMap. nil (hash-map)))
