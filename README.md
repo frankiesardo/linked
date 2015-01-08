@@ -13,32 +13,32 @@ Map and Set structures that rememeber the insertion order of its elements, even 
     (use 'linked.map)
 
     (linked-map :b 2 :a 1 :d 4)
-    => #linked/map {:b 2, :a 1, :d 4}
+    => #linked/map [[:b 2] [:a 1] [:d 4]]
 
-    (assoc (ordered-map :b 2 :a 1 :d 4) :c 3)
-    => #linked/map {:b 2, :a 1, :d 4, :c 3}
+    (assoc (linked-map :b 2 :a 1 :d 4) :c 3)
+    => #linked/map [[:b 2] [:a 1] [:d 4] [:c 3]]
 
     (into (linked-map) [[:c 3] [:a 1] [:d 4]])
-    => #linked/map {:c 3, :a 1, :d 4}
+    => #linked/map [[:c 3] [:a 1] [:d 4]]
 
     (dissoc (linked-map :c 3 :a 1 :d 4) :a)
-    => #linked/map {:c 3, :d 4}
+    => #linked/map [[:c 3] [:d 4]]
 
 ## Set
 
     (use 'linked.set)
 
     (linked-set 4 3 1 8 2)
-    => #linked/set (4 3 1 8 2)
+    => #linked/set [4 3 1 8 2]
 
     (conj (linked-set 9 10) 1 2 3)
-    => #linked/set (9 10 1 2 3)
+    => #linked/set [9 10 1 2 3]
 
     (into (linked-set) [7 6 1 5 6])
-    => #linked/set (7 6 1 5)
+    => #linked/set [7 6 1 5]
 
     (disj (linked-set 8 1 7 2 6) 7)
-    => #linked/set (8 1 2 6)
+    => #linked/set [8 1 2 6]
 
 ## Performance
 
