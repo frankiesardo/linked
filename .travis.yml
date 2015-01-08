@@ -3,3 +3,4 @@ lein: lein2
 script: lein2 cleantest
 notifications:
   email: false
+sudo: false
