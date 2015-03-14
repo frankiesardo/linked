@@ -26,7 +26,6 @@
             "check" ["do" "clean," "cljx" "once," "check"]
             "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}
   :deploy-repositories {"clojars" {:url "https://clojars.org/repo"
-                                   :signing {:gpg-key "fran.sardo@gmail.com"}
                                    :username [:gpg :env/clojars_username]
                                    :password [:gpg :env/clojars_password]}}
 
