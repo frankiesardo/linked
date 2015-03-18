@@ -3,7 +3,7 @@ lein: lein
 script: lein test
 after_script:
 - echo $INIT_ENV >> ~/init.sh && chmod +x ~/init.sh && . ~/init.sh
-- lein deploy
+- lein travis
 notifications:
   email: false
 sudo: false

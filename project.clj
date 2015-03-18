@@ -1,4 +1,4 @@
-(defproject frankiesardo/linked "1.0.10"
+(defproject frankiesardo/linked "1.0.11-SNAPSHOT"
   :description "Efficient ordered map and set"
   :url "http://github.com/frankiesardo/linked"
   :license {:name "Eclipse Public License"
@@ -25,6 +25,14 @@
   :aliases {"test" ["do" "clean," "cljx" "once," "test," "cljsbuild" "test"]
             "check" ["do" "clean," "cljx" "once," "check"]
             "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["doc"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
   :deploy-repositories {"clojars" {:url "https://clojars.org/repo"
                                    :username [:gpg :env/clojars_username]
                                    :password [:gpg :env/clojars_password]}}
