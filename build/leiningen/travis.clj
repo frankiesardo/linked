@@ -36,4 +36,4 @@
 
       #"(?i)release" (do
                        (switch-master project)
-                       (release/relase project)))))
+                       (release/release project)))))
