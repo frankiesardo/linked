@@ -23,9 +23,6 @@
 (defn ->gh-pages [project]
   (sync-branch project "doc/" "gh-pages"))
 
-(defn ->heorku [project]
-  (sync-branch project "sample/" "heroku"))
-
 (defn switch-master []
   (eval/sh "git" "checkout" "master"))
 
@@ -35,8 +32,7 @@
       #"master" (do
                   (deploy/deploy project)
                   (if (env "TRAVIS_TAG")
-                    (->gh-pages project)
-                    (->heroku project)))
+                    (->gh-pages project)))
 
       #"(?i)release" (do
                        (switch-master project)
