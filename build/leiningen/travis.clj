@@ -30,7 +30,7 @@
   (when (= "false" (env "TRAVIS_PULL_REQUEST"))
     (condp re-find (env "TRAVIS_BRANCH")
       #"master" (do
-                  (deploy/deploy project)
+                  (deploy/deploy project "clojars")
                   (if (env "TRAVIS_TAG")
                     (->gh-pages project)))
 
