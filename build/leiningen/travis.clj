@@ -4,18 +4,24 @@
             [leiningen.core [eval :as eval]]
             [leiningen [release :as release]
              [deploy :as deploy]
-             [vcs :as vcs]]))
+             [vcs :as vcs]])
+  (:import [java.nio.file Files]
+           [java.nio.file.attribute FileAttribute]))
 
 (defn env [s]
   (System/getenv s))
 
+(defn tmp-dir []
+  (.toString (Files/createTempDirectory nil (into-array FileAttribute []))))
+
 (defn- sync-branch [project dir branch]
-  (let [msg (with-out-str (eval/sh "git" "log" "-1" "--pretty=%B"))
+  (let [tmp-dir (tmp-dir)
+        msg (with-out-str (eval/sh "git" "log" "-1" "--pretty=%B"))
         url (-> (eval/sh "git" "config" "--get" "remote.origin.url")
                 with-out-str (str/replace "\n" ""))]
-    (eval/sh "git" "clone" "-b" branch url branch)
-    (eval/sh "rsync" "-a" "--exclude=checkouts" dir branch)
-    (binding [eval/*dir* (str (:root project) "/" branch)]
+    (eval/sh "git" "clone" "-b" branch url tmp-dir)
+    (eval/sh "rsync" "-a" "--exclude=checkouts" dir tmp-dir)
+    (binding [eval/*dir* tmp-dir]
       (eval/sh "git" "add" "--all")
       (eval/sh "git" "commit" "-m" msg)
       (eval/sh "git" "push" "origin" branch "--quiet"))))
@@ -28,6 +34,7 @@
   (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
 
 (defn travis [project & args]
+  (println "***" (env "TRAVIS_TAG") "***")
   (when (= "false" (env "TRAVIS_PULL_REQUEST"))
     (condp re-find (env "TRAVIS_BRANCH")
       #"master" (do
