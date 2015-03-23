@@ -27,6 +27,7 @@
             "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["cljx" "once"]
                   ["doc"]
                   ["vcs" "commit"]
                   ["vcs" "tag"]

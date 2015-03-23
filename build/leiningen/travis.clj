@@ -34,12 +34,11 @@
   (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
 
 (defn travis [project & args]
-  (println "***" (env "TRAVIS_TAG") "***")
   (when (= "false" (env "TRAVIS_PULL_REQUEST"))
     (condp re-find (env "TRAVIS_BRANCH")
       #"master" (do
                   (deploy/deploy project "clojars")
-                  (if (env "TRAVIS_TAG")
+                  (if-not (str/blank? (env "TRAVIS_TAG"))
                     (->gh-pages project)))
 
       #"(?i)release" (do
