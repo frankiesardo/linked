@@ -14,7 +14,7 @@
 (defn tmp-dir []
   (.toString (Files/createTempDirectory nil (into-array FileAttribute []))))
 
-(defn- sync-branch [project dir branch]
+(defn- sync-branch [dir branch]
   (let [tmp-dir (tmp-dir)
         msg (with-out-str (eval/sh "git" "log" "-1" "--pretty=%B"))
         url (-> (eval/sh "git" "config" "--get" "remote.origin.url")
@@ -27,9 +27,9 @@
       (eval/sh "git" "push" "origin" branch "--quiet"))))
 
 (defn ->gh-pages [project]
-  (sync-branch project "doc/" "gh-pages"))
+  (sync-branch "doc/" "gh-pages"))
 
-(defn switch-master []
+(defn switch-master [project]
   (eval/sh "git" "checkout" "master")
   (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
 
