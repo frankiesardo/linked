@@ -32,6 +32,7 @@
 (defn switch-master [project]
   (eval/sh "git" "reset" "--hard")
   (eval/sh "git" "fetch" "origin")
+  (eval/sh "git" "branch" "-avv")
   (eval/sh "git" "checkout" "-b" "master" "origin/master")
   (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
 
