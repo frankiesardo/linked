@@ -33,16 +33,19 @@
   (eval/sh "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*")
   (eval/sh "git" "fetch" "origin")
   (eval/sh "git" "checkout" "master")
-  (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
+  (eval/sh "git" "push" "origin" "--quiet" "--delete" (env "TRAVIS_BRANCH")))
 
 (defn travis [project & args]
   (when (= "false" (env "TRAVIS_PULL_REQUEST"))
-    (condp re-find (env "TRAVIS_BRANCH")
-      #"master" (do
-                  (deploy/deploy project "clojars")
-                  (if-not (str/blank? (env "TRAVIS_TAG"))
-                    (->gh-pages project)))
+    (cond
+      (re-find #"master" (env "TRAVIS_BRANCH"))
+      (deploy/deploy project "clojars")
 
-      #"(?i)release" (do
-                       (checkout-master project)
-                       (release/release project)))))
+      (re-find #"(?i)release" (env "TRAVIS_BRANCH"))
+      (do
+        (checkout-master project)
+        (release/release project))
+
+      (not (str/blank? (env "TRAVIS_TAG")))
+      (do (deploy/deploy project "clojars")
+          (->gh-pages project)))))

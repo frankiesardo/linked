@@ -33,7 +33,7 @@
                   ["vcs" "tag"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
-                  ["vcs" "push"]]
+                  ["vcs" "push" "--quiet"]]
   :deploy-repositories {"clojars" {:url "https://clojars.org/repo"
                                    :username [:gpg :env/clojars_username]
                                    :password [:gpg :env/clojars_password]}}
