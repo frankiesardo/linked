@@ -29,9 +29,10 @@
 (defn ->gh-pages [project]
   (sync-branch "doc/" "gh-pages"))
 
-(defn switch-master [project]
-  (eval/sh "git" "fetch")
-  (eval/sh "git" "checkout" "-f" "master")
+(defn checkout-master [project]
+  (eval/sh "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*")
+  (eval/sh "git" "fetch" "origin")
+  (eval/sh "git" "checkout" "master")
   (eval/sh "git" "push" "origin" "--delete" (env "TRAVIS_BRANCH")))
 
 (defn travis [project & args]
@@ -43,5 +44,5 @@
                     (->gh-pages project)))
 
       #"(?i)release" (do
-                       (switch-master project)
+                       (checkout-master project)
                        (release/release project)))))
