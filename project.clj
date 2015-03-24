@@ -30,7 +30,7 @@
                   ["cljx" "once"]
                   ["doc"]
                   ["vcs" "commit"]
-                  ["vcs" "tag"]
+                  ["vcs" "tag" "v"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push" "--quiet"]]
