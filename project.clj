@@ -22,6 +22,9 @@
                                    {:source-paths ["test"]
                                     :output-path "target/test-classes"
                                     :rules :cljs}]}}}
+  :codox {:src-dir-uri "http://github.com/frankiesardo/linked/blob/master/"
+          :src-uri-mapping {#"target/classes" #(str "src/" % "x")}
+          :src-linenum-anchor-prefix "L"}
   :aliases {"test" ["do" "clean," "cljx" "once," "test," "cljsbuild" "test"]
             "check" ["do" "clean," "cljx" "once," "check"]
             "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}
