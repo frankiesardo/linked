@@ -218,10 +218,9 @@ h2 {
 }
 
 .public {
-    margin: 0;
-    border-top: 1px solid #e0e0e0;
-    padding-top: 14px;
-    padding-bottom: 6px;
+   padding-top: 12px;
+   margin-top: 15px;
+   margin-bottom: 28px;
 }
 
 .public:last-child {
@@ -245,9 +244,9 @@ h2 {
 
 .members .inner {
     padding-top: 5px;
-    padding-left: 12px;
+    padding-left: 15px;
     margin-top: 2px;
-    margin-left: 7px;
+    margin-left: 4px;
     border-left: 1px solid #bbb;
 }
 
@@ -256,34 +255,26 @@ h2 {
 }
 
 .members .public {
-    border-top: none;
     margin-top: 0;
+    margin-bottom: 1em;
     padding-top: 6px;
-    padding-bottom: 0;
 }
 
 .members .public:first-child {
     padding-top: 0;
 }
 
-h4.type,
-h4.dynamic,
-h4.added,
-h4.deprecated {
-    float: left;
-    margin: 3px 10px 15px 0;
-    font-size: 15px;
-    font-weight: bold;
-    font-variant: small-caps;
-}
-
 .public h4.type,
 .public h4.dynamic,
 .public h4.added,
 .public h4.deprecated {
+    margin: 0;
+    float: left;
+    font-variant: small-caps;
     font-size: 13px;
     font-weight: bold;
-    margin: 3px 0 0 10px;
+    margin-top: 3px;
+    margin-left: 10px;
 }
 
 .members h4.type,
@@ -358,11 +349,6 @@ p {
 }
 
 .doc {
-    margin: 0 0 26px 0;
-    clear: both;
-}
-
-.public .doc {
     margin: 0;
 }
 
@@ -379,9 +365,17 @@ p {
     font-size: 14px;
 }
 
-.doc, .public, .namespace .index {
+.markdown, .namespace .index {
     max-width: 680px;
     overflow-x: visible;
+}
+
+.namespace-docs .markdown {
+    padding-bottom: 15px;
+}
+
+.markdown p:last-child {
+    margin-bottom: 0;
 }
 
 .markdown code, .src-link a {
@@ -441,10 +435,6 @@ p {
     border-bottom: 1px dotted #333;
     font-variant: none
     cursor: help;
-}
-
-.src-link {
-    margin-bottom: 15px;
 }
 
 .src-link a {
