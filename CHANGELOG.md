@@ -1,5 +1,8 @@
 ## Current
 
+## 1.2.0
+- Move map and set functions to linked.core
+
 ## 1.1.0
 - Remove cljx dependency
 
