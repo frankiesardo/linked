@@ -1,4 +1,4 @@
-(ns leiningen.travis
+(ns leiningen.circle
   (:require [clojure.java.shell :as sh]
             [clojure.string :as str]
             [leiningen.core [eval :as eval]]
@@ -35,17 +35,13 @@
   (eval/sh "git" "checkout" "master")
   (eval/sh "git" "push" "origin" "--quiet" "--delete" (env "TRAVIS_BRANCH")))
 
-(defn travis [project & args]
-  (when (= "false" (env "TRAVIS_PULL_REQUEST"))
-    (cond
-      (re-find #"master" (env "TRAVIS_BRANCH"))
-      (deploy/deploy project "clojars")
+(defn circle [project & args]
+  (condp re-find (env "CIRCLE_BRANCH")
+    #"master"
+    (deploy/deploy project "clojars")
 
-      (re-find #"(?i)release" (env "TRAVIS_BRANCH"))
-      (do
-        (checkout-master project)
-        (release/release project))
-
-      (not (str/blank? (env "TRAVIS_TAG")))
-      (do (deploy/deploy project "clojars")
-          (->gh-pages project)))))
+    #"(?i)release"
+    (do
+      (checkout-master project)
+      (release/release project)
+      (->gh-pages project))))

@@ -9,7 +9,7 @@
                               :exclusions [org.clojure/clojure]]
                              [lein-cljsbuild "1.0.5"]
                              [com.cemerick/clojurescript.test "0.3.3"]
-                             [codox "0.8.8"]]
+                             [codox "0.8.10"]]
                    :cljx {:builds [{:source-paths ["src"]
                                     :output-path "target/classes"
                                     :rules :clj}
@@ -26,24 +26,19 @@
           :src-uri-mapping {#"target/classes" #(str "src/" % "x")}
           :src-linenum-anchor-prefix "L"}
   :aliases {"test" ["do" "clean," "cljx" "once," "test," "cljsbuild" "test"]
-            "check" ["do" "clean," "cljx" "once," "check"]
-            "deploy" ["do" "clean," "cljx" "once," "deploy" "clojars"]}
+            "check" ["do" "clean," "cljx" "once," "check"]}
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["cljx" "once"]
                   ["doc"]
                   ["vcs" "commit"]
                   ["vcs" "tag" "v"]
+                  ["deploy" "clojars"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
-                  ["vcs" "push" "--quiet"]]
-  :deploy-repositories {"clojars" {:url "https://clojars.org/repo"
-                                   :username [:gpg :env/clojars_username]
-                                   :password [:gpg :env/clojars_password]}}
-
+                  ["vcs" "push"]]
   :auto-clean false
   :jar-exclusions [#"\.cljx"]
-
   :cljsbuild {:test-commands
               {"phantom" ["phantomjs" :runner "target/testable.js"]}
               :builds
@@ -51,7 +46,5 @@
                 :compiler {:output-to "target/testable.js"
                            :optimizations :whitespace
                            :pretty-print true}}]}
-
-
   :source-paths ["src" "target/classes"]
   :test-paths ["test" "target/test-classes"])

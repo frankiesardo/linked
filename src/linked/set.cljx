@@ -1,5 +1,5 @@
 (ns linked.set
-  (:require [linked.map :refer [linked-map]]
+  (:require [linked.map :refer [empty-linked-map]]
             [clojure.string :as string]
             #+cljs [cljs.reader :as reader])
   #+clj (:import (clojure.lang Counted
@@ -16,11 +16,6 @@
                  (java.lang Iterable)))
 
 (declare empty-linked-set)
-
-(defn linked-set
-  ([] empty-linked-set)
-  ([x] (if (coll? x) (into empty-linked-set x) (linked-set [x])))
-  ([x & more] (apply conj empty-linked-set x more)))
 
 #+clj
 (deftype LinkedSet [linked-map]
@@ -50,7 +45,7 @@
       this
       (LinkedSet. (assoc linked-map o nil))))
   (empty [_]
-    (linked-set))
+    empty-linked-set)
   (equiv [this o]
     (and (= (.count this) (count o))
          (every? (fn [e] (contains? o e))
@@ -162,7 +157,9 @@
   (-pr-writer [coll writer opts]
     (-write writer (str "#linked/set " (into [] coll)))))
 
-#+cljs (reader/register-tag-parser! "linked/set" linked-set)
+(def ^{:tag LinkedSet} empty-linked-set
+  (LinkedSet. empty-linked-map))
 
-(def ^{:private true,:tag LinkedSet} empty-linked-set
-  (LinkedSet. (linked-map)))
+(def ->linked-set (partial into empty-linked-set))
+
+#+cljs (reader/register-tag-parser! "linked/set" ->linked-set)

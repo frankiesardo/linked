@@ -1,0 +1,5 @@
+test:
+  pre:
+   - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+  post:
+    - lein circle

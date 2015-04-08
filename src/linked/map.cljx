@@ -21,10 +21,7 @@
 
 (declare empty-linked-map)
 
-(defn linked-map
-  ([] empty-linked-map)
-  ([coll] (into empty-linked-map coll))
-  ([k v & more] (apply assoc empty-linked-map k v more)))
+
 
 
 (defrecord Node [value left right])
@@ -226,8 +223,6 @@
   IPrintWithWriter
   (-pr-writer [coll writer opts] (-write writer (str "#linked/map " (into [] coll)))))
 
-#+cljs (reader/register-tag-parser! "linked/map" linked-map)
-
 ;;;; assoc and dissoc impl
 
 (defn- assoc* [^LinkedMap this k v]
@@ -287,5 +282,9 @@
     (when (seq delegate-map)
       (visit-node delegate-map tail head :left))))
 
-(def ^{:private true :tag LinkedMap} empty-linked-map
+(def ^{:tag LinkedMap} empty-linked-map
   (LinkedMap. nil (hash-map)))
+
+(def ->linked-map (partial into empty-linked-map))
+
+#+cljs (reader/register-tag-parser! "linked/map" ->linked-map)

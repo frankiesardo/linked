@@ -1,5 +1,5 @@
 (ns linked.set-test
-  (:require [linked.set :refer [linked-set]]
+  (:require [linked.core :as linked]
             #+clj [clojure.test :refer :all]
             #+cljs [cemerick.cljs.test]
             #+cljs [cljs.reader :refer [read-string]])
@@ -9,7 +9,7 @@
 
 #+clj
 (deftest implementations
-  (let [s (linked-set)]
+  (let [s (linked/set)]
     (testing "Interfaces marked as implemented"
       (are [class] (instance? class s)
            clojure.lang.IPersistentSet
@@ -28,7 +28,7 @@
              (rseq s))))))
 
 (deftest equality
-  (let [empty (linked-set)
+  (let [empty (linked/set)
         one-item (conj empty 1)]
     (testing "Basic symmetric equality"
       (is (= #{} empty))
@@ -47,7 +47,7 @@
   (let [values [[:first 10]
                 [:second 20]
                 [:third 30]]
-        s (into (linked-set) values)]
+        s (into (linked/set) values)]
     (testing "Seq behaves like seq of a vector"
       (is (= (seq values) (seq s))))
     (testing "New values get added at the end"
@@ -68,7 +68,7 @@
     (is (= (rseq s) (rseq source)))))
 
 (deftest set-features
-  (let [s (linked-set :a 1 :b 2 :c 3)]
+  (let [s (linked/set :a 1 :b 2 :c 3)]
     (testing "Keyword lookup"
       (is (= :a (:a s))))
     (testing "IFn support"
@@ -81,11 +81,11 @@
       (is (= {'a 'b} (meta (with-meta s {'a 'b})))))))
 
 (deftest object-features
-  (let [s (linked-set 'a 1 :b 2)]
+  (let [s (linked/set 'a 1 :b 2)]
     (is (= "[a 1 :b 2]" (str s)))))
 
 (deftest print-and-read-ordered
-  (let [s (linked-set 1 2 9 8 7 5)]
+  (let [s (linked/set 1 2 9 8 7 5)]
     (is (= "#linked/set [1 2 9 8 7 5]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]

@@ -1,5 +1,5 @@
 (ns linked.map-test
-  (:require [linked.map :refer [linked-map]]
+  (:require [linked.core :as linked]
             #+clj [clojure.test :refer :all]
             #+cljs [cemerick.cljs.test]
             #+cljs [cljs.reader :refer [read-string]])
@@ -9,7 +9,7 @@
 
 #+clj
 (deftest implementations
-  (let [basic (linked-map)]
+  (let [basic (linked/map)]
     (testing "Interfaces marked as implemented"
       (are [class] (instance? class basic)
            clojure.lang.IPersistentMap
@@ -29,7 +29,7 @@
              (rseq basic))))))
 
 (deftest equality
-  (let [empty-map (linked-map)
+  (let [empty-map (linked/map)
         one-item (assoc empty-map 1 2)]
     (testing "Basic symmetric equality"
       (is (= {} empty-map))
@@ -51,7 +51,7 @@
   (let [values [[:first 10]
                 [:second 20]
                 [:third 30]]
-        m (into (linked-map) values)]
+        m (into (linked/map) values)]
     (testing "Seq behaves like on a seq of vectors"
       (is (= (seq values) (seq m))))
     (testing "New values get added at the end"
@@ -78,7 +78,7 @@
     (is (= (rseq m) (rseq source)))))
 
 (deftest map-features
-  (let [m (linked-map :a 1 :b 2 :c 3)]
+  (let [m (linked/map :a 1 :b 2 :c 3)]
     (testing "Keyword lookup"
       (is (= 1 (:a m))))
     (testing "Sequence views"
@@ -87,18 +87,18 @@
     (testing "IFn support"
       (is (= 2 (m :b)))
       (is (= 'not-here (m :nothing 'not-here)))
-      (is (= nil ((linked-map :x nil) :x 'not-here))))
+      (is (= nil ((linked/map :x nil) :x 'not-here))))
     (testing "Get out Map.Entry"
       (is (= [:a 1] (find m :a))))
     (testing "Get out Map.Entry with falsy value"
-      (is (= [:a nil] (find (linked-map :a nil) :a))))
+      (is (= [:a nil] (find (linked/map :a nil) :a))))
     (testing "Ordered dissoc"
       (let [m (dissoc m :b)]
         (is (= [:a :c] (keys m)))
         (is (= [1 3] (vals m)))))
     (testing "Empty equality"
       (let [m (dissoc m :b :a :c)]
-        (is (= (linked-map) m))))
+        (is (= (linked/map) m))))
     (testing "Can conj a map"
       (is (= {:a 1 :b 2 :c 3 :d 4} (conj m {:d 4}))))
     (testing "(conj m nil) returns m"
@@ -110,11 +110,11 @@
       (is (= {'a 'b} (meta (with-meta m {'a 'b})))))))
 
 (deftest object-features
-  (let [m (linked-map 'a 1 :b 2)]
+  (let [m (linked/map 'a 1 :b 2)]
     (is (= "{a 1, :b 2}" (str m)))))
 
 (deftest print-and-read-ordered
-  (let [s (linked-map 1 2, 3 4, 5 6, 1 9, 7 8)]
+  (let [s (linked/map 1 2, 3 4, 5 6, 1 9, 7 8)]
     (is (= "#linked/map [[1 9] [3 4] [5 6] [7 8]]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
