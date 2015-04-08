@@ -33,7 +33,7 @@
   (eval/sh "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*")
   (eval/sh "git" "fetch" "origin")
   (eval/sh "git" "checkout" "master")
-  (eval/sh "git" "push" "origin" "--quiet" "--delete" (env "TRAVIS_BRANCH")))
+  (eval/sh "git" "push" "origin" "--quiet" "--delete" (env "CIRCLE_BRANCH")))
 
 (defn circle [project & args]
   (condp re-find (env "CIRCLE_BRANCH")
