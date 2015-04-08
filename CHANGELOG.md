@@ -1,6 +1,6 @@
 ## Current
 
-## 1.2.1
+## 1.2.2
 - Move map and set functions to linked.core
 
 ## 1.1.0

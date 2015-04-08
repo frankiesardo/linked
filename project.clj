@@ -1,4 +1,4 @@
-(defproject frankiesardo/linked "1.2.1-SNAPSHOT"
+(defproject frankiesardo/linked "1.2.2-SNAPSHOT"
   :description "Efficient ordered map and set"
   :url "http://github.com/frankiesardo/linked"
   :license {:name "Eclipse Public License"
@@ -34,6 +34,7 @@
                   ["vcs" "commit"]
                   ["vcs" "tag" "v"]
                   ["deploy" "clojars"]
+                  ["rsync" "doc/" "gh-pages"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]]
