@@ -1,6 +1,6 @@
 # Linked
 
-[![Build Status](https://travis-ci.org/frankiesardo/linked.svg?branch=master)](https://travis-ci.org/frankiesardo/linked)
+[![Build status](https://circleci.com/gh/frankiesardo/linked.svg?style=shield)](https://circleci.com/gh/frankiesardo/linked)
 
 Map and Set structures that rememeber the insertion order of its elements, even after multiple assoc and dissoc. For Clojure and ClojureScript.
 
