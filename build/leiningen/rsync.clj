@@ -7,7 +7,7 @@
 (defn tmp-dir []
   (.toString (Files/createTempDirectory nil (into-array FileAttribute []))))
 
-(defn- rsync [project dir branch]
+(defn rsync [project dir branch]
   (let [tmp-dir (tmp-dir)
         msg (with-out-str (eval/sh "git" "log" "-1" "--pretty=%B"))
         url (-> (eval/sh "git" "config" "--get" "remote.origin.url")
