@@ -3,8 +3,10 @@
   :url "http://github.com/frankiesardo/linked"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.6.0"]
-                                  [org.clojure/clojurescript "0.0-2371"]]
+  :profiles {:dev {:dependencies [[org.clojure/clojure "1.7.0"
+                                   :scope "provided"]
+                                  [org.clojure/clojurescript "1.7.58"
+                                   :scope "provided"]]
                    :plugins [[com.keminglabs/cljx "0.6.0"
                               :exclusions [org.clojure/clojure]]
                              [lein-cljsbuild "1.0.5"]

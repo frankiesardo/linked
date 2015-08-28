@@ -46,40 +46,37 @@
       (LinkedSet. (assoc linked-map o nil))))
   (empty [_]
     empty-linked-set)
-  (equiv [this o]
-    (and (= (.count this) (count o))
-         (every? (fn [e] (contains? o e))
-                 (.seq this))))
-
-  Seqable
-  (seq [_]
-    (when-let [s (seq linked-map)] (map key s)))
-
-  Reversible
-  (rseq [_]
-    (when-let [s (rseq linked-map)] (map key s)))
-
-  IFn
-  (invoke [this k]
-    (get this k))
-
-  IObj
-  (meta [this]
-    (.meta ^IObj linked-map))
-  (withMeta [this m]
-    (LinkedSet. (.withMeta ^IObj linked-map m)))
-
-  Object
-  (toString [this]
-    (str "[" (string/join " " (map str this)) "]"))
-  (hashCode [this]
-    (reduce + (map hash (.seq this))))
-  (equals [this other]
+  (equiv [this other]
     (or (identical? this other)
         (and (instance? Set other)
              (let [^Set s other]
                (and (= (.size this) (.size s))
-                    (every? #(.contains s %) (.seq this))))))))
+                    (every? #(.contains s %) (.seq this)))))))
+    Seqable
+    (seq [_]
+      (when-let [s (seq linked-map)] (map key s)))
+
+    Reversible
+    (rseq [_]
+      (when-let [s (rseq linked-map)] (map key s)))
+
+    IFn
+    (invoke [this k]
+      (get this k))
+
+    IObj
+    (meta [this]
+      (.meta ^IObj linked-map))
+    (withMeta [this m]
+      (LinkedSet. (.withMeta ^IObj linked-map m)))
+
+    Object
+    (toString [this]
+      (str "[" (string/join " " (map str this)) "]"))
+    (hashCode [this]
+      (reduce + (map hash (.seq this))))
+    (equals [this other]
+      (.equiv this other)))
 
 #+clj
 (defmethod print-method LinkedSet [o ^java.io.Writer w]

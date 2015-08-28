@@ -1,4 +1,5 @@
 ## Current
+- Equivalence checks for instance of Map first
 
 ## 1.2.2
 - Move map and set functions to linked.core

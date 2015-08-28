@@ -45,7 +45,10 @@
         (is (= other-way unsorted))))
     (testing "Hash code sanity"
       (is (integer? (hash one-item)))
-      (is (= (hash {1 2}) (hash one-item))))))
+      (is (= (hash {1 2}) (hash one-item))))
+    (testing "Does not blow up when give something different"
+      (is (not= one-item 'baz))
+      (is (not= 'baz one-item)))))
 
 (deftest ordering
   (let [values [[:first 10]

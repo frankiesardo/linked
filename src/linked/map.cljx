@@ -75,7 +75,8 @@
   (empty [_]
     (with-meta empty-linked-map (meta delegate-map)))
   (equiv [this o]
-    (and (= (.count this) (count o))
+    (and (instance? Map o)
+         (= (.count this) (count o))
          (every? (fn [[k v]]
                    (= v (get o k)))
                  (.seq this))))

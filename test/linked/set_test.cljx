@@ -41,7 +41,10 @@
             unsorted #{1 2 3 4}]
         (is (= one-way other-way))
         (is (= one-way unsorted))
-        (is (= other-way unsorted))))))
+        (is (= other-way unsorted))))
+    (testing "Does not blow up when given something random"
+      (is (not= one-item 'baz))
+      (is (not= 'baz one-item)))))
 
 (deftest ordering
   (let [values [[:first 10]
@@ -78,7 +81,9 @@
     (testing "Ordered disj"
       (is (= #{:a 1 2 3} (disj s :b :c))))
     (testing "meta support"
-      (is (= {'a 'b} (meta (with-meta s {'a 'b})))))))
+      (is (= {'a 'b} (meta (with-meta s {'a 'b})))))
+    (testing "cons yields a list with element prepended"
+      (is (= '(:a :a 1 :b 2 :c 3) (cons :a s))))))
 
 (deftest object-features
   (let [s (linked/set 'a 1 :b 2)]
