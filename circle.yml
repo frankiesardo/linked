@@ -10,7 +10,16 @@ machine:
     BOOT_JVM_OPTIONS: "-Xmx3g"
 test:
   override:
-    - boot show -d
     - boot test
-
+deployment:
+  release:
+    tag: /v.*/
+    commands:
+      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+      - boot deploy
+  snapshot:
+    branch: master
+    commands:
+      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+      - boot deploy
  
