@@ -1,5 +1,5 @@
 machine:
- java:
+  java:
     version:
       oraclejdk8
   pre:
