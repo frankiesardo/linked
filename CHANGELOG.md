@@ -1,3 +1,6 @@
+## 1.2.4
+- Move to boot and .cljc files
+
 ## 1.2.3
 - Equivalence checks for instance of Map first
 

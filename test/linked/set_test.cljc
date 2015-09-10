@@ -1,31 +1,28 @@
 (ns linked.set-test
   (:require [linked.core :as linked]
-            #+clj [clojure.test :refer :all]
-            #+cljs [cemerick.cljs.test]
-            #+cljs [cljs.reader :refer [read-string]])
-  #+cljs (:require-macros
-          [cemerick.cljs.test :refer
-           [deftest is are testing run-tests]]))
+            #?(:clj  [clojure.test :refer :all]
+               :cljs [cljs.test :refer-macros [is are testing deftest run-tests]])
+            #?(:cljs [cljs.reader :refer [read-string]])))
 
-#+clj
-(deftest implementations
-  (let [s (linked/set)]
-    (testing "Interfaces marked as implemented"
-      (are [class] (instance? class s)
+#?(:clj
+   (deftest implementations
+     (let [s (linked/set)]
+       (testing "Interfaces marked as implemented"
+         (are [class] (instance? class s)
            clojure.lang.IPersistentSet
            clojure.lang.IPersistentCollection
            clojure.lang.Counted
            java.util.Set))
-    (testing "Behavior smoke testing"
-      (testing "Most operations don't change type"
-        (are [object] (= (class object) (class s))
+       (testing "Behavior smoke testing"
+         (testing "Most operations don't change type"
+           (are [object] (= (class object) (class s))
              (conj s 1 2)
              (disj s 1)
              (into s #{1 2})))
-      (testing "Seq-oriented operations return nil when empty"
-        (are [object] (nil? object)
+         (testing "Seq-oriented operations return nil when empty"
+           (are [object] (nil? object)
              (seq s)
-             (rseq s))))))
+           (rseq s)))))))
 
 (deftest equality
   (let [empty (linked/set)
@@ -94,6 +91,6 @@
     (is (= "#linked/set [1 2 9 8 7 5]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
-      #+clj (is (= linked.set.LinkedSet (type o)))
+      #?(:clj (is (= linked.set.LinkedSet (type o))))
       (is (= '(1 2 9 8 7 5)
              (seq o))))))

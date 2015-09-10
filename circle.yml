@@ -1,5 +1,25 @@
-test:
+machine:
+  java:
+    version:
+      oraclejdk8
   pre:
-   - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
-  post:
-    - lein circle
+    - wget -O bin/boot https://github.com/boot-clj/boot/releases/download/2.2.0/boot.sh
+    - chmod 755 bin/boot
+    - boot -V
+  environment:
+    BOOT_JVM_OPTIONS: "-Xmx3g"
+test:
+  override:
+    - boot test
+deployment:
+  release:
+    tag: /v.*/
+    commands:
+      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+      - boot deploy
+  snapshot:
+    branch: master
+    commands:
+      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+      - boot deploy
+ 
