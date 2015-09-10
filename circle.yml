@@ -7,6 +7,7 @@ machine:
     BOOT_JVM_OPTIONS: "-Xmx3g"
 test:
   override:
+    - boot show -d
     - boot test
 
  
