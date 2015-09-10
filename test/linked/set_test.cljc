@@ -43,25 +43,6 @@
       (is (not= one-item 'baz))
       (is (not= 'baz one-item)))))
 
-(deftest equality
-  (let [empty (linked/set)
-        one-item (conj empty 1)]
-    (testing "Basic symmetric equality"
-      (is (= #{} empty))
-      (is (= empty #{}))
-      (is (= #{1} one-item))
-      (is (= one-item #{1})))
-    (testing "Order-insensitive comparisons"
-      (let [one-way (into empty [1 2 3 4])
-            other-way (into empty [3 4 1 2])
-            unsorted #{1 2 3 4}]
-        (is (= one-way other-way))
-        (is (= one-way unsorted))
-        (is (= other-way unsorted))))
-    (testing "Does not blow up when given something random"
-      (is (not= one-item 'baz))
-      (is (not= 'baz one-item)))))
-
 (deftest ordering
   (let [values [[:first 10]
                 [:second 20]
