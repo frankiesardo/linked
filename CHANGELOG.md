@@ -1,4 +1,4 @@
-## Current
+## 1.2.3
 - Equivalence checks for instance of Map first
 
 ## 1.2.2
