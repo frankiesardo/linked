@@ -30,7 +30,7 @@
     "0.1.0-SNAPSHOT"))
 
 (task-options!
- pom  {:project        'frankiesardo/linked
+ pom  {:project        'frankiesardo/lab
        :version        +version+
        :description    "Efficient ordered map and set."
        :url            "https://github.com/frankiesardo/linked"

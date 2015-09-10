@@ -18,7 +18,7 @@ deployment:
       - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
       - boot deploy
   snapshot:
-    branch: master
+    branch: boot+cljc
     commands:
       - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
       - boot deploy
