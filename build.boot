@@ -5,7 +5,7 @@
                  [adzerk/boot-cljs-repl     "0.1.9"      :scope "test"]
                  [adzerk/boot-reload        "0.3.1"      :scope "test"]
                  [pandeiro/boot-http        "0.6.3"      :scope "test"]
-                 [org.clojure/clojurescript "1.7.58"]
+                 [org.clojure/clojurescript "1.7.58"     :scope "test"]
                  [crisptrutski/boot-cljs-test "0.1.0-SNAPSHOT" :scope "test"]])
 
 (require
