@@ -1,32 +1,29 @@
 (ns linked.map-test
   (:require [linked.core :as linked]
-            #+clj [clojure.test :refer :all]
-            #+cljs [cemerick.cljs.test]
-            #+cljs [cljs.reader :refer [read-string]])
-  #+cljs (:require-macros
-          [cemerick.cljs.test :refer
-           [deftest is are testing run-tests]]))
+            #?(:clj  [clojure.test :refer :all]
+               :cljs [cljs.test :refer-macros [is are testing deftest run-tests]])
+            #?(:cljs [cljs.reader :refer [read-string]])))
 
-#+clj
-(deftest implementations
-  (let [basic (linked/map)]
-    (testing "Interfaces marked as implemented"
-      (are [class] (instance? class basic)
+#?(:clj
+   (deftest implementations
+     (let [basic (linked/map)]
+       (testing "Interfaces marked as implemented"
+         (are [class] (instance? class basic)
            clojure.lang.IPersistentMap
            clojure.lang.IPersistentCollection
            clojure.lang.Counted
            clojure.lang.Associative
            java.util.Map))
-    (testing "Behavior smoke testing"
-      (testing "Most operations don't change type"
-        (are [object] (= (class object) (class basic))
+       (testing "Behavior smoke testing"
+         (testing "Most operations don't change type"
+           (are [object] (= (class object) (class basic))
              (conj basic [1 2])
              (assoc basic 1 2)
              (into basic {1 2})))
-      (testing "Seq-oriented operations return nil when empty"
-        (are [object] (nil? object)
+         (testing "Seq-oriented operations return nil when empty"
+           (are [object] (nil? object)
              (seq basic)
-             (rseq basic))))))
+             (rseq basic)))))))
 
 (deftest equality
   (let [empty-map (linked/map)
@@ -121,6 +118,6 @@
     (is (= "#linked/map [[1 9] [3 4] [5 6] [7 8]]"
            (pr-str s)))
     (let [o (read-string (pr-str s))]
-      #+clj (is (= linked.map.LinkedMap (type o)))
+      #?(:clj (is (= linked.map.LinkedMap (type o))))
       (is (= '([1 9] [3 4] [5 6] [7 8])
              (seq o))))))
