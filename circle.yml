@@ -3,7 +3,6 @@ machine:
     - wget -O bin/boot https://github.com/boot-clj/boot/releases/download/2.2.0/boot.sh
     - chmod 755 bin/boot
     - boot -V
-    - boot show -d
   environment:
     BOOT_JVM_OPTIONS: "-Xmx3g"
 test:

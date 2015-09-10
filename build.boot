@@ -38,6 +38,10 @@
        :license        {"Eclipse Public License"
                         "http://www.eclipse.org/legal/epl-v10.html"}})
 
+(deftask deploy []
+  (comp (pom) (jar) (install)
+        (push :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
+
 (deftask testing []
   (set-env! :source-paths #(conj % "test"))
   identity)
