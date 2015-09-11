@@ -92,10 +92,3 @@
         (watch)
         (test-clj)
         (test-cljs :js-env :phantom)))
-
-
-(deftask foo []
-  (with-pre-wrap fileset
-    (println (output-files fileset))
-    fileset)
-  )
