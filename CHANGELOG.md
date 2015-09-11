@@ -1,4 +1,4 @@
-## 1.2.4
+## 1.2.5
 - Move to boot and .cljc files
 
 ## 1.2.3
