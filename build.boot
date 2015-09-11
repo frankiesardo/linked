@@ -1,9 +1,7 @@
 (set-env!
- :source-paths    #{"src"}
- :resource-paths  #{"resources"}
- :dependencies '[[adzerk/boot-cljs          "0.0-3308-0" :scope "test"]
-                 [adzerk/boot-cljs-repl     "0.1.9"      :scope "test"]
-                 [org.clojure/clojurescript "1.7.58"     :scope "test"]
+ :resource-paths #{"src"}
+ :dependencies '[[adzerk/boot-cljs "0.0-3308-0" :scope "test"]
+                 [adzerk/boot-cljs-repl "0.1.9" :scope "test"]
                  [crisptrutski/boot-cljs-test "0.1.0-SNAPSHOT" :scope "test"]])
 
 (require
@@ -94,3 +92,10 @@
         (watch)
         (test-clj)
         (test-cljs :js-env :phantom)))
+
+
+(deftask foo []
+  (with-pre-wrap fileset
+    (println (output-files fileset))
+    fileset)
+  )
