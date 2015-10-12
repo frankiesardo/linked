@@ -48,6 +48,12 @@ Map and Set structures that rememeber the insertion order of its elements, even 
 
 These data structures wrap a normal `hash-map` but instead of feeding it a normal `[key value]` pair their remeber a `[key value left-key right-key]` record. When an item is removed from the data structure it is sufficient to update the left and right node to reference each others keys while removing the chosen node. This implementation yields the same Big O time and space complexity of a standard `hash-map` (altought effective performance will be slower by a constant factor).
 
+## Comparison with [ordered](https://github.com/amalloy/ordered)
+
+- Ordered will keep on allocating memory space until you explicitly call [compact](https://github.com/amalloy/ordered/blob/develop/src/flatland/ordered/common.clj#L7) to clean up the garbage. Linked doesn't keep a pointer to old elements
+- Ordered has transient support for faster allocation of a large number of items
+- Linked works with ClojureScript
+
 ## License
 
 Copyright © 2014 Frankie Sardo
