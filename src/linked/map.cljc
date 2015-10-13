@@ -5,6 +5,7 @@
                                  Counted
                                  IObj
                                  IFn
+                                 IHashEq
                                  ILookup
                                  IPersistentCollection
                                  IPersistentVector
@@ -118,13 +119,16 @@
 
   ;; IEditableCollection
 
+  IHashEq
+  (hasheq [this] (.hasheq (into {} this)))
+
   Object
   (toString [this]
     (str "{" (string/join ", " (for [[k v] this] (str k " " v))) "}"))
   (equals [this other]
     (.equiv this other))
   (hashCode [this]
-    (hash (into {} this)))]
+    (.hashCode (into {} this)))]
        :cljs
        [Object 
   (toString [coll]
@@ -163,7 +167,7 @@
   (-equiv [coll other] (equiv-map coll other))
 
   IHash
-  (-hash [coll] (hash-unordered-coll coll))
+  (-hash [coll] (hash (into {} coll)))
 
   ISequential
 

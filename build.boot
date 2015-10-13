@@ -2,7 +2,9 @@
  :resource-paths #{"src"}
  :dependencies '[[adzerk/boot-cljs "0.0-3308-0" :scope "test"]
                  [adzerk/boot-cljs-repl "0.1.9" :scope "test"]
-                 [crisptrutski/boot-cljs-test "0.1.0-SNAPSHOT" :scope "test"]])
+                 [crisptrutski/boot-cljs-test "0.1.0-SNAPSHOT" :scope "test"]
+                 [collection-check "0.1.6" :scope "test"
+                  :exclusions [org.clojure/clojure]]])
 
 (require
  '[adzerk.boot-cljs      :refer [cljs]]

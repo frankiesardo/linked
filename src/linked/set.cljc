@@ -5,6 +5,7 @@
   #?(:clj (:import (clojure.lang Counted
                                  IObj
                                  IFn
+                                 IHashEq
                                  ILookup
                                  IPersistentCollection
                                  IPersistentSet
@@ -70,11 +71,14 @@
         (withMeta [this m]
                   (LinkedSet. (.withMeta ^IObj linked-map m)))
 
+        IHashEq
+        (hasheq [this] (.hasheq (into #{} this)))
+
         Object
         (toString [this]
                   (str "[" (string/join " " (map str this)) "]"))
         (hashCode [this]
-                  (reduce + (map hash (.seq this))))
+                  (.hashCode (into #{} this)))
         (equals [this other]
                 (.equiv this other))]
        :cljs
@@ -109,7 +113,7 @@
                          other)))
 
         IHash
-        (-hash [coll] (hash-unordered-coll coll))
+        (-hash [coll] (hash (into #{} coll)))
 
         ISeqable
         (-seq [coll] (when-let [s (seq linked-map)] (map key s)))
