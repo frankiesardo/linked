@@ -1,3 +1,6 @@
+## 1.2.6
+- Correct implementation of IHashEq
+
 ## 1.2.5
 - Move to boot and .cljc files
 
