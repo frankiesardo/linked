@@ -74,8 +74,8 @@
   (equiv [this o]
     (and (instance? Map o)
          (= (.count this) (count o))
-         (every? (fn [[k v]]
-                   (= v (get o k)))
+         (every? (fn [[k v :as kv]]
+                   (= kv (find o k)))
                  (.seq this))))
 
   Seqable

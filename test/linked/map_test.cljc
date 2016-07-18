@@ -51,7 +51,9 @@
       (is (= (hash {1 2}) (hash one-item))))
     (testing "Does not blow up when give something different"
       (is (not= one-item 'baz))
-      (is (not= 'baz one-item)))))
+      (is (not= 'baz one-item)))
+    (testing "nil values don't break .equiv"
+      (is (not= (linked/map :x nil) {:y 0})))))
 
 (deftest ordering
   (let [values [[:first 10]
