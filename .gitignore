@@ -7,5 +7,7 @@ pom.xml.asc
 *.class
 /.lein-*
 !/.lein-classpath
-/.nrepl-port
+/.nrepl-*
 *.DS_Store
+project.clj
+*.iml
