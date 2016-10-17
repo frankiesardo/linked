@@ -1,3 +1,7 @@
+## 1.2.7
+- Correct CLJS implementation of IKVReduce
+Contributed by @KeeganMyers
+
 ## 1.2.6
 - Correct implementation of IHashEq
 

@@ -204,7 +204,7 @@
 
        IKVReduce
        (-kv-reduce [coll f init]
-                   (reduce (seq coll) f init))
+                   (reduce #(apply (partial f %1) %2) init (seq coll)))
 
        IFn
        (-invoke [coll k]
