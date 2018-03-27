@@ -1,8 +1,8 @@
 (ns linked.map-test
   (:require [linked.core :as linked]
             #?@(:clj  [[clojure.test :refer :all]
-                      [collection-check :refer :all]
-                      [clojure.test.check.generators :as gen]]
+                       [collection-check.core :refer :all]
+                       [clojure.test.check.generators :as gen]]
                 :cljs [[cljs.test :refer-macros [is are testing deftest run-tests]]])
             #?(:cljs [cljs.reader :refer [read-string]])))
 
@@ -129,3 +129,6 @@
       #?(:clj (is (= linked.map.LinkedMap (type o))))
       (is (= '([1 9] [3 4] [5 6] [7 8])
              (seq o))))))
+
+(deftest map-entry-test
+  (is (map-entry? (first (linked/map 1 2)))))

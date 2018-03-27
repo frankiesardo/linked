@@ -256,7 +256,7 @@
 
 (defn- map-entry [k v]
   #?(:clj  (MapEntry. k v)
-     :cljs (vector k v)))
+     :cljs (MapEntry. k v nil)))
 
 (defn- visit-node [delegate-map current last direction]
   (let [[k node] (find delegate-map current)
@@ -285,4 +285,4 @@
 
 (def ->linked-map (partial into empty-linked-map))
 
-#?(:cljs (reader/register-tag-parser! "linked/map" ->linked-map))
+#?(:cljs (reader/register-tag-parser! 'linked/map ->linked-map))
