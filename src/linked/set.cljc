@@ -161,4 +161,4 @@
 
 (def ->linked-set (partial into empty-linked-set))
 
-#?(:cljs (reader/register-tag-parser! "linked/set" ->linked-set))
+#?(:cljs (reader/register-tag-parser! 'linked/set ->linked-set))

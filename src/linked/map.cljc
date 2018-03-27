@@ -285,4 +285,4 @@
 
 (def ->linked-map (partial into empty-linked-map))
 
-#?(:cljs (reader/register-tag-parser! "linked/map" ->linked-map))
+#?(:cljs (reader/register-tag-parser! 'linked/map ->linked-map))
