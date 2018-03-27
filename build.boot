@@ -1,9 +1,12 @@
 (set-env!
  :resource-paths #{"src"}
- :dependencies '[[adzerk/boot-cljs "0.0-3308-0" :scope "test"]
-                 [adzerk/boot-cljs-repl "0.1.9" :scope "test"]
-                 [crisptrutski/boot-cljs-test "0.1.0-SNAPSHOT" :scope "test"]
-                 [collection-check "0.1.6" :scope "test"
+ :source-paths #{"test"}
+ :dependencies '[[adzerk/boot-cljs "2.1.4" :scope "test"]
+                 [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
+                 [crisptrutski/boot-cljs-test "0.3.5-SNAPSHOT" :scope "test"]
+                 [org.clojure/clojurescript "1.10.238" :scope "test"]
+                 [doo "0.1.8" :scope "test"]
+                 [collection-check "0.1.7" :scope "test"
                   :exclusions [org.clojure/clojure]]])
 
 (require
@@ -37,10 +40,6 @@
 (deftask deploy []
   (comp (pom) (jar) (install)
         (push :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
-
-(deftask testing []
-  (set-env! :source-paths #(conj % "test"))
-  identity)
 
 (ns-unmap 'boot.user 'test)
 
@@ -84,13 +83,11 @@
         fileset))))
 
 (deftask test []
-  (comp (testing)
-        (test-clj)
+  (comp (test-clj)
         (test-cljs :js-env :phantom
                    :exit?  true)))
 
 (deftask autotest []
-  (comp (testing)
-        (watch)
+  (comp (watch)
         (test-clj)
         (test-cljs :js-env :phantom)))

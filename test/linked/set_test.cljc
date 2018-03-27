@@ -1,7 +1,7 @@
 (ns linked.set-test
   (:require [linked.core :as linked]
             #?@(:clj  [[clojure.test :refer :all]
-                       [collection-check :refer :all]
+                       [collection-check.core :refer :all]
                        [clojure.test.check.generators :as gen]]
                 :cljs [[cljs.test :refer-macros [is are testing deftest run-tests]]])
             #?(:cljs [cljs.reader :refer [read-string]])))
