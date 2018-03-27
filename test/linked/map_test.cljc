@@ -129,3 +129,6 @@
       #?(:clj (is (= linked.map.LinkedMap (type o))))
       (is (= '([1 9] [3 4] [5 6] [7 8])
              (seq o))))))
+
+(deftest map-entry-test
+  (is (map-entry? (first (linked/map 1 2)))))
