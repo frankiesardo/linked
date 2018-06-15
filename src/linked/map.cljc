@@ -16,8 +16,9 @@
                             Reversible
                             Seqable
                             SeqIterator)
-              (java.util Map
-                         Map$Entry)
+              (java.util Map 
+                         Map$Entry
+                         LinkedHashSet)
               (java.lang Iterable))))
 
 (declare empty-linked-map)
@@ -46,6 +47,10 @@
        Map
        (get [this k]
          (.valAt this k))
+       (isEmpty [this]
+         (not (.seq this)))
+       (entrySet [this]
+         (LinkedHashSet. (or (.seq this) [])))
        (containsValue [this v]
          (boolean (seq (filter #(= % v) (.values this)))))
        (values [this]

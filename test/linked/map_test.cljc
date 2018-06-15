@@ -132,3 +132,10 @@
 
 (deftest map-entry-test
   (is (map-entry? (first (linked/map 1 2)))))
+
+#?(:clj
+   (deftest java-interop
+     (is (.isEmpty ^Map (linked/map)))
+     (is (not (.isEmpty ^Map (linked/map 1 2))))
+     (is (= [] (vec (.entrySet ^Map (linked/map)))))
+     (is (= (partition 2 (range 100)) (vec (.entrySet ^Map (apply linked/map (range 100))))))))
