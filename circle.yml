@@ -3,7 +3,7 @@ machine:
     version:
       oraclejdk8
   pre:
-    - wget -O bin/boot https://github.com/boot-clj/boot/releases/download/2.2.0/boot.sh
+    - curl -L https://github.com/boot-clj/boot-bin/releases/download/2.7.2/boot.sh -o bin/boot
     - chmod 755 bin/boot
     - boot -V
   environment:
