@@ -1,25 +1,48 @@
-machine:
-  java:
-    version:
-      oraclejdk8
-  pre:
-    - curl -L https://github.com/boot-clj/boot-bin/releases/download/2.7.2/boot.sh -o bin/boot
-    - chmod 755 bin/boot
-    - boot -V
-  environment:
-    BOOT_JVM_OPTIONS: "-Xmx3g"
-test:
-  override:
-    - boot test
-deployment:
-  release:
-    tag: /v.*/
-    commands:
-      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
-      - boot deploy
-  snapshot:
-    branch: master
-    commands:
-      - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
-      - boot deploy
- 
+version: 2
+jobs:
+  test:
+    working_directory: ~/work
+    docker:
+      - image: circleci/clojure:boot-2.7.2-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-{{ checksum "boot.properties" }}-{{ checksum "build.boot" }}
+            - v1-
+      - run: boot test
+      - save_cache:
+          paths:
+            - ~/.m2
+            - ~/.boot/cache/lib
+            - ~/.boot/cache/bin
+          key: v1-{{ checksum "boot.properties" }}-{{ checksum "build.boot" }}
+  deploy:
+    working_directory: ~/work
+    docker:
+      - image: circleci/clojure:boot-2.7.2
+    steps:
+      - checkout
+      - add_ssh_keys
+      - restore_cache:
+          key: v1-{{ checksum "boot.properties" }}-{{ checksum "build.boot" }}
+      - run: git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+      - deploy:
+          command: boot deploy
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /v.*/
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+            tags:
+              only: /v.*/
