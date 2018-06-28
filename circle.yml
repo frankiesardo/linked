@@ -3,7 +3,7 @@ jobs:
   test:
     working_directory: ~/work
     docker:
-      - image: circleci/clojure:boot-2.7.2
+      - image: circleci/clojure:boot-2.7.2-browsers
     steps:
       - checkout
       - restore_cache:
