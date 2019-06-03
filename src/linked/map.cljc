@@ -15,6 +15,7 @@
                             MapEquivalence
                             Reversible
                             Seqable
+                            Sequential
                             SeqIterator)
               (java.util Map 
                          Map$Entry
@@ -84,9 +85,14 @@
                         (= kv (find o k)))
                       (.seq this))))
 
+       Sequential
        Seqable
        (seq [this]
          (seq* this))
+
+       Comparable
+       (compareTo [o1 o2]
+         (compare (vec (vals o1)) (vec (vals o2))))
 
        Reversible
        (rseq [this]
@@ -176,9 +182,13 @@
        (-hash [coll] (hash (into {} coll)))
 
        ISequential
-
+       
        ISeqable
        (-seq [coll] (seq* coll))
+
+       IComparable
+       (-compare [_ o]
+         (vec (vals _)) (vec (vals o)))
 
        IReversible
        (-rseq [coll] (rseq* coll))
