@@ -13,6 +13,7 @@
                             IPersistentVector
                             Reversible
                             Seqable
+                            Sequential
                             SeqIterator)
               (java.util Set)
               (java.lang Iterable))))
@@ -37,6 +38,10 @@
        (iterator [this]
          (SeqIterator. (.seq this)))
 
+       Comparable
+       (compareTo [_ o]
+         (compare (vec _) (vec o)))
+       
        Counted
 
        IPersistentCollection
@@ -54,6 +59,7 @@
                   (let [^Set s other]
                     (and (= (.size this) (.size s))
                          (every? #(.contains s %) (.seq this)))))))
+       Sequential
        Seqable
        (seq [_]
          (when-let [s (seq linked-map)] (map key s)))
@@ -116,16 +122,19 @@
        IHash
        (-hash [coll] (hash (into #{} coll)))
 
+       ISequential
        ISeqable
        (-seq [coll] (when-let [s (seq linked-map)] (map key s)))
 
        IReversible
        (-rseq [coll] (when-let [s (rseq linked-map)] (map key s)))
 
-       ISequential
-
        ICounted
        (-count [coll] (-count linked-map))
+
+       IComparable
+       (-compare [_ o]
+         (compare (vec _) (vec o)))
 
        ILookup
        (-lookup [coll v]
