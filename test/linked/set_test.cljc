@@ -71,7 +71,7 @@
 
 (deftest reversing
   (let [source (vec (range 1000))
-        s (into (sorted-set) source)]
+        s (into (linked/set) source)]
     (is (= (rseq s) (rseq source)))))
 
 (deftest set-features
@@ -81,7 +81,7 @@
     (testing "IFn support"
       (is (= :b (s :b))))
     (testing "Falsy lookup support"
-      (is (= false (#{false 1} false))))
+      (is (= false ((linked/set false 1) false))))
     (testing "Ordered disj"
       (is (= #{:a 1 2 3} (disj s :b :c))))
     (testing "meta support"
@@ -101,3 +101,17 @@
       #?(:clj (is (= linked.set.LinkedSet (type o))))
       (is (= '(1 2 9 8 7 5)
              (seq o))))))
+
+(deftest comparing
+  (let [s1 (linked/set 1 2 3)
+        s2 (linked/set 1 2 4)]
+    (testing "Comparable support"
+     (is (= -1 (compare s1 s2)))
+     (is (= 1 (compare s2 s1)))
+     (is (= 0 (compare s1 s1))))))
+
+(deftest flattening
+  (let [s (linked/set 1 2 3)]
+    (testing "flatten support"
+     (is (= '(1 2 3 4 5 6)
+            (flatten [s 4 5 6]))))))
