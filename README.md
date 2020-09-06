@@ -2,7 +2,7 @@
 
 [![Build status](https://circleci.com/gh/frankiesardo/linked.svg?style=shield)](https://circleci.com/gh/frankiesardo/linked)
 
-Map and Set structures that rememeber the insertion order of its elements, even after multiple assoc and dissoc. For Clojure and ClojureScript.
+Map and Set structures that remember the insertion order of its elements, even after multiple assoc and dissoc. For Clojure and ClojureScript.
 
 ## Download
 
@@ -46,7 +46,7 @@ Map and Set structures that rememeber the insertion order of its elements, even 
 
 ## Performance
 
-These data structures wrap a normal `hash-map` but instead of feeding it a normal `[key value]` pair their remeber a `[key value left-key right-key]` record. When an item is removed from the data structure it is sufficient to update the left and right node to reference each others keys while removing the chosen node. This implementation yields the same Big O time and space complexity of a standard `hash-map` (altought effective performance will be slower by a constant factor).
+These data structures wrap a normal `hash-map` but instead of feeding it a normal `[key value]` pair they remember a `[key value left-key right-key]` record. When an item is removed from the data structure it is sufficient to update the left and right node to reference each others keys while removing the chosen node. This implementation yields the same Big O time and space complexity of a standard `hash-map` (although effective performance will be slower by a constant factor).
 
 ## Comparison with [ordered](https://github.com/amalloy/ordered)
 
